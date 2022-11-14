@@ -85,7 +85,7 @@ export const constantRoutes = [
             path: 'information',
             name: 'Information',
             component: () => import('@/views/clusters/information/index'),
-            meta: { title: '集群管理', icon: 'el-icon-menu' }
+            meta: { title: '凭据管理', icon: 'el-icon-menu' }
           },
           {
             path: 'nodes',
