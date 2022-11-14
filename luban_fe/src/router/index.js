@@ -69,6 +69,24 @@ export const constantRoutes = [
         meta: { title: '工作负载', icon: 'el-icon-s-grid' }
       },
       {
+        path: 'networks',
+        name: 'Network',
+        component: () => import('@/views/networks/index'),
+        meta: { title: '网络管理', icon: 'el-icon-s-operation' }
+      },
+      {
+        path: 'configuration',
+        name: 'configuration',
+        component: () => import('@/views/configuration/index'),
+        meta: { title: '配置管理', icon: 'el-icon-setting' }
+      },
+      {
+        path: 'storage',
+        name: 'storage',
+        component: () => import('@/views/storage/index'),
+        meta: { title: '存储管理', icon: 'el-icon-coin' }
+      },
+      {
         path: 'namespaces',
         name: 'Namespace',
         component: () => import('@/views/namespaces/index'),
