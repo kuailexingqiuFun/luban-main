@@ -77,7 +77,7 @@ export const constantRoutes = [
       {
         path: 'clusters',
         name: 'Cluster',
-        meta: { title: '集群管理', icon: 'table' },
+        meta: { title: '集群管理', icon: 'el-icon-menu' },
         component: () => import('@/views/clusters/index')
       },
       {
