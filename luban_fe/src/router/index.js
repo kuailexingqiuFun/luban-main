@@ -78,6 +78,7 @@ export const constantRoutes = [
         path: 'clusters',
         name: 'Cluster',
         meta: { title: '集群管理', icon: 'table' },
+        redirect: '/kubernetes/clusters/information',
         component: () => import('@/views/clusters/index'),
         children: [
           {
