@@ -1,6 +1,6 @@
 <template>
   <div>
-    节点管理
+    节点管理11111
   </div>
 </template>
 
