@@ -60,19 +60,19 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/kubernetes/Workload',
     name: 'Workload',
-    meta: { title: 'Kubernetes', icon: 'el-icon-s-help' },
+    meta: { title: 'Kubernetes', icon: 'el-icon-cloudy' },
     children: [
       {
         path: 'Workload',
         name: 'Workload',
         component: () => import('@/views/workloads/index'),
-        meta: { title: '工作负载', icon: 'table' }
+        meta: { title: '工作负载', icon: 'el-icon-s-grid' }
       },
       {
         path: 'namespaces',
         name: 'Namespace',
         component: () => import('@/views/namespaces/index'),
-        meta: { title: '命名空间', icon: 'table' }
+        meta: { title: '命名空间', icon: 'el-icon-crop' }
       },
       {
         path: 'clusters',
@@ -85,19 +85,19 @@ export const constantRoutes = [
             path: 'information',
             name: 'Information',
             component: () => import('@/views/clusters/information/index'),
-            meta: { title: '集群信息', icon: 'table' }
+            meta: { title: '集群管理', icon: 'el-icon-menu' }
           },
           {
             path: 'nodes',
             name: 'Nodes',
             component: () => import('@/views/clusters/nodes/index'),
-            meta: { title: '节点管理', icon: 'table' }
+            meta: { title: '节点管理', icon: 'el-icon-s-fold' }
           },
           {
             path: 'tag_taint',
             name: 'Tag_taint',
             component: () => import('@/views/clusters/tag_taint/index'),
-            meta: { title: '标签与污点', icon: 'table' }
+            meta: { title: '标签与污点', icon: 'el-icon-star-on' }
           }
         ]
       }
