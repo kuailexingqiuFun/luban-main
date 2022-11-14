@@ -78,28 +78,13 @@ export const constantRoutes = [
         path: 'clusters',
         name: 'Cluster',
         meta: { title: '集群管理', icon: 'table' },
-        redirect: '/kubernetes/clusters/information',
-        component: () => import('@/views/clusters/index'),
-        children: [
-          {
-            path: 'information',
-            name: 'Information',
-            component: () => import('@/views/clusters/information/index'),
-            meta: { title: '凭据管理', icon: 'el-icon-menu' }
-          },
-          {
-            path: 'nodes',
-            name: 'Nodes',
-            component: () => import('@/views/clusters/nodes/index'),
-            meta: { title: '节点管理', icon: 'el-icon-s-fold' }
-          },
-          {
-            path: 'tag_taint',
-            name: 'Tag_taint',
-            component: () => import('@/views/clusters/tag_taint/index'),
-            meta: { title: '标签与污点', icon: 'el-icon-star-on' }
-          }
-        ]
+        component: () => import('@/views/clusters/index')
+      },
+      {
+        path: 'nodes',
+        name: 'Nodes',
+        meta: { title: '节点管理', icon: 'table' },
+        component: () => import('@/views/nodes/index')
       }
     ]
   },
