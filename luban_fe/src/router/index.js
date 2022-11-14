@@ -54,7 +54,17 @@ export const constantRoutes = [
       meta: { title: 'Dashboard', icon: 'dashboard' }
     }]
   },
-
+  {
+    path: '/user',
+    component: Layout,
+    redirect: '/user/list',
+    children: [{
+      path: 'users',
+      name: 'users',
+      component: () => import('@/views/users/index'),
+      meta: { title: '用户管理', icon: 'el-icon-user' }
+    }]
+  },
   {
     path: '/kubernetes',
     component: Layout,
