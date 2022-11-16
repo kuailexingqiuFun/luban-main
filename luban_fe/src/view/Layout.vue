@@ -24,7 +24,6 @@
                   <span>容器管理</span>
                 </template>
                 <el-menu-item-group>
-                  <template slot="title">kubernetes</template>
                   <el-menu-item index="/kubernetes/workloads">工作负载</el-menu-item>
                   <el-menu-item index="1-2">选项2</el-menu-item>
                 </el-menu-item-group>

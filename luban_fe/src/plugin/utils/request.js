@@ -14,9 +14,9 @@ const instance = axios.create({
 
 // request 拦截器
 instance.interceptors.request.use(config => {
-    if (store.token) {
-        config.headers['token'] = 'jwt ' + store.token
-    }
+    // if (store.getters.token) {
+    //     config.headers['token'] = 'jwt ' + store.getters.token
+    // }
     return config
     },
     error => {
@@ -24,9 +24,10 @@ instance.interceptors.request.use(config => {
 })
 
 // 响应拦截器
-instance.interceptors.response.use(response => {
+instance.interceptors.response.use(
+    response => {
         if (response.status === 200) {
-            return Promise.resolve(response.data)
+            return Promise.resolve(response)
         } else {
             Message({
                 message: response.msg,
