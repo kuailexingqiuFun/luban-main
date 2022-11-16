@@ -82,7 +82,7 @@
         <div class="container">
           <YamlFormBlock
               ref="FormBlock"
-              style="width:70%;"
+              style="width:100%;"
               :title="title"
               :form="currentValue"
               @submit="handleSubmit"
