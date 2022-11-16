@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"github.com/dnsjia/luban/api/middleware"
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/dnsjia/luban/api/middleware"
 	"github.com/dnsjia/luban/api/routers"
 	"github.com/dnsjia/luban/cmd/options"
 	"github.com/dnsjia/luban/pkg/model"
@@ -36,7 +36,8 @@ func Run() error {
 	r := gin.Default()
 	gin.SetMode(options.Config.Http.Mode)
 	// 定义路由分组
-	PublicGroup := r.Group("/api/v1", middleware.Cors())
+	r.Use(middleware.Cors())
+	PublicGroup := r.Group("/api/v1")
 	{
 		routers.UserRouter(PublicGroup)
 		routers.KubernetesRouter(PublicGroup)
