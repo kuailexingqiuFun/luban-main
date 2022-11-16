@@ -30,7 +30,7 @@
   export default {
     name: "DetailReplicas",
     props: {
-      information_id: Number,
+      cluster_id: Number,
       formInfo: Object,
       resourceType: String,
     },
@@ -69,7 +69,7 @@
       updateForm() {
         this.loading = true
         this.form.spec.replicas = parseInt(this.form.spec.replicas)
-        updateWorkLoad(this.information_id, this.resourceType, this.form.metadata.namespace, this.form.metadata.name, this.form)
+        updateWorkLoad(this.cluster_id, this.resourceType, this.form.metadata.namespace, this.form.metadata.name, this.form)
                 .then(() => {
                   this.$message({
                     type: "success",

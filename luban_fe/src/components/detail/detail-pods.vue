@@ -89,7 +89,7 @@
 </template>
 
 <script>
-   // import {listPodsWithNsLabelSelector} from "@/api/k8s/pod"
+   import { PodsList } from "@/api/kubernetes/workloads/pods"
    // import {listPodMetrics} from "@/api/k8s/pod"
    import TableOperations from "@/components/table-operations"
    import { AgeFormat } from '@/utils/age'
@@ -98,7 +98,7 @@
 export default {
   name: "DetailPods",
   props: {
-    information_id: Number,
+    cluster_id: Number,
     namespace: String,
     selector: String,
     fieldSelector: String,
@@ -164,12 +164,12 @@ export default {
     openTerminal(row){
       this.Title = '容器终端 '+  ' 容器名称: ' + row.metadata.name
       this.dialogVisibleTerminal = true
-      this.currenturl = this.path + "/k8s/terminal/Terminal?pod_name=" + row.metadata.name + '&namespace=' + row.metadata.namespace + '&information_id=' + this.information_id + '&name='+ this.name
+      this.currenturl = this.path + "/k8s/terminal/Terminal?pod_name=" + row.metadata.name + '&namespace=' + row.metadata.namespace + '&cluster_id=' + this.cluster_id + '&name='+ this.name
     },
     openTerminalLogs(row){
       this.Title = '容器日志 '+  ' 容器名称: ' + row.metadata.name
       this.dialogVisibleContainerlog = true
-      this.currenturl = this.path + "/k8s/terminal/appContainerLog?pod_name=" + row.metadata.name + '&namespace=' + row.metadata.namespace + '&information_id=' + this.information_id + '&name='+ this.name
+      this.currenturl = this.path + "/k8s/terminal/appContainerLog?pod_name=" + row.metadata.name + '&namespace=' + row.metadata.namespace + '&cluster_id=' + this.cluster_id + '&name='+ this.name
     },
     closeTerminalDialog(){
       this.dialogVisibleTerminal = false
@@ -179,15 +179,15 @@ export default {
     },
     search () {
       this.loading = true
-      // listPodsWithNsLabelSelector(this.information_id, this.namespace, this.selector).then((res) => {
-      //   this.pods = res.data.items
-      //   this.loading = false
-      //   listPodMetrics(this.information_id, this.namespace, this.selector).then(res => {
-      //     if (res.code === 0) {
-      //       this.podUsage = res.data.items
-      //     }
-      //   })
-      // })
+      PodsList(this.cluster_id, '', '', this.namespace,'', this.selector, '').then((res) => {
+        this.pods = res.data.items
+        this.loading = false
+        // listPodMetrics(this.cluster_id, this.namespace, this.selector).then(res => {
+        //   if (res.code === 0) {
+        //     this.podUsage = res.data.items
+        //   }
+        // })
+      })
     },
     getPodRestartCounts(containerStatuses){
       let counts = 0

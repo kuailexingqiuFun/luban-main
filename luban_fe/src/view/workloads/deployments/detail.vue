@@ -10,31 +10,31 @@
               <el-tabs v-model="activeName" tab-position="top" type="border-card"
                        @tab-click="handleClick" ref=tabs>
                   <el-tab-pane name="pods" label="容器组">
-                      <detail-pods :information_id="information_id" :namespace="form.metadata.namespace" :name="form.metadata.name" :selector="selectors" />
+                      <detail-pods :cluster_id="cluster_id" :namespace="form.metadata.namespace" :name="form.metadata.name" :selector="selectors" />
                   </el-tab-pane>
                   <el-tab-pane name="service" label="服务">
-                      <detail-service :information_id="information_id" :namespace="form.metadata.namespace" :name="form.metadata.name" resourceType="Deployment" />
+                      <detail-service :cluster_id="cluster_id" :namespace="form.metadata.namespace" :name="form.metadata.name" resourceType="Deployment" />
                   </el-tab-pane>
                   <el-tab-pane name="ingress" label="路由">
-                      <detail-ingress :information_id="information_id" :namespace="form.metadata.namespace" :name="form.metadata.name" resourceType="Deployment" />
+                      <detail-ingress :cluster_id="cluster_id" :namespace="form.metadata.namespace" :name="form.metadata.name" resourceType="Deployment" />
                   </el-tab-pane>
                   <el-tab-pane name="conditions" label="运行时信息">
                       <detail-conditions :conditions="form.status.conditions" />
                   </el-tab-pane>
                   <el-tab-pane name="strategy" label="部署策略">
-                      <detail-update :information_id="information_id"  :formInfo="form" resourceType="deployments" />
+                      <detail-update :cluster_id="cluster_id"  :formInfo="form" resourceType="deployments" />
                   </el-tab-pane>
                   <el-tab-pane name="replicas" label="副本数">
-                      <detail-replicas :information_id="information_id"  :formInfo="form" resourceType="deployments" />
+                      <detail-replicas :cluster_id="cluster_id"  :formInfo="form" resourceType="deployments" />
                   </el-tab-pane>
                   <el-tab-pane name="image" label="容器镜像">
-                      <detail-image  :information_id="information_id"  :formInfo="form" resourceType="deployments" />
+                      <detail-image  :cluster_id="cluster_id"  :formInfo="form" resourceType="deployments" />
                   </el-tab-pane>
                   <el-tab-pane name="pause" label="容器暂停">
-                      <detail-pause :information_id="information_id"  :formInfo="form" resourceType="deployments" />
+                      <detail-pause :cluster_id="cluster_id"  :formInfo="form" resourceType="deployments" />
                   </el-tab-pane>
                   <el-tab-pane name="history" label="历史版本">
-                      <detail-replicasets :information_id="information_id" :namespace="form.metadata.namespace" :name="form.metadata.name" :selector="selectors" />
+                      <detail-replicasets :cluster_id="cluster_id" :namespace="form.metadata.namespace" :name="form.metadata.name" :selector="selectors" />
                   </el-tab-pane>
               </el-tabs>
           </el-col>
@@ -58,7 +58,7 @@
         name: 'DetailBlock',
       components: { DetailBasic, DetailConditions,DetailReplicas, DetailService,DetailPause, DetailIngress, DetailUpdate,DetailPods, DetailImage, DetailReplicasets},
       props: {
-        information_id: Number,
+        cluster_id: Number,
         form: {
                 type: Object,
                 default: function() {

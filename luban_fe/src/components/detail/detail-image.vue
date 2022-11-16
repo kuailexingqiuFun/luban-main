@@ -33,7 +33,7 @@ export default {
   name: "DetailImage",
   components: { FormItem },
   props: {
-    information_id: Number,
+    cluster_id: Number,
     formInfo: Object,
     resourceType: String,
   },
@@ -104,7 +104,7 @@ export default {
           }
         }
       }
-      updateWorkLoad(this.information_id, this.resourceType, this.form.metadata.namespace, this.form.metadata.name, this.form)
+      updateWorkLoad(this.cluster_id, this.resourceType, this.form.metadata.namespace, this.form.metadata.name, this.form)
         .then(() => {
           this.dialogModifyVersionVisible = false
           this.loading = true

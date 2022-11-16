@@ -23,7 +23,7 @@
 export default {
   name: "DetailSvcs",
   props: {
-    information_id: Number,
+    cluster_id: Number,
     namespace: String,
     name: String,
     resourceType: String,
@@ -37,7 +37,7 @@ export default {
   methods: {
     async search() {
       this.services = []
-      // const res = await getServiceList("", "", this.information_id, this.name, this.namespace, "")
+      // const res = await getServiceList("", "", this.cluster_id, this.name, this.namespace, "")
       // if (res.data.items === null) {
       //   return
       // }

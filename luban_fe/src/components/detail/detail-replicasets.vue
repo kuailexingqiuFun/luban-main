@@ -40,7 +40,7 @@ export default {
   name: "DetailReplicasets",
   components: { TableOperations, YamlEditor },
   props: {
-    information_id: Number,
+    cluster_id: Number,
     namespace: String,
     selector: String,
     fieldSelector: String,
@@ -95,7 +95,7 @@ export default {
   methods: {
     search() {
       this.loading = true
-      // listNsReplicaSetsWorkload(this.information_id, this.namespace, this.selector, this.fieldSelector).then((res) => {
+      // listNsReplicaSetsWorkload(this.cluster_id, this.namespace, this.selector, this.fieldSelector).then((res) => {
       //   this.loading = false
       //   res.data.items.sort((a, b) => b.metadata.annotations["deployment.kubernetes.io/revision"] - a.metadata.annotations["deployment.kubernetes.io/revision"])
       //   for (var i = 0; i < res.data.items.length; i++) {
@@ -109,7 +109,7 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        // patchDeployment(this.information_id, row.metadata.namespace, this.name, { spec: { template: row.spec.template } })
+        // patchDeployment(this.cluster_id, row.metadata.namespace, this.name, { spec: { template: row.spec.template } })
         //   .then(() => {
         //     this.dialogModifyVersionVisible = false
         //     this.loading = true

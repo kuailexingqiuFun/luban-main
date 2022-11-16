@@ -42,7 +42,7 @@ export default {
   name: "DetailIngress",
   components: {  },
   props: {
-    information_id: Number,
+    cluster_id: Number,
     namespace: String,
     name: String,
     resourceType: String,
@@ -57,7 +57,7 @@ export default {
     search() {
       this.ingress = []
       this.loading= true
-      // ingressList("", "", this.information_id, this.name, this.namespace, "").then((res) => {
+      // ingressList("", "", this.cluster_id, this.name, this.namespace, "").then((res) => {
       //   if (res.data.items === null) {
       //     return
       //   }
