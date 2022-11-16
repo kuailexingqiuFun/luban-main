@@ -212,7 +212,6 @@ export default {
     async handleSubmit(value) {
       this.dialogYamlVisible = false
       const res = await DeploymentsUpdate(this.cluster_id, value.metadata.namespace, value.metadata.name, value)
-      console.log(res)
       if (res.data.code !== 0) {
         this.$message({
           type: 'error',

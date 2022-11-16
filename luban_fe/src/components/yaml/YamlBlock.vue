@@ -80,6 +80,11 @@ export default {
       this.$emit('submit', yaml.load(this.monacoEditor.getValue()))
     },
     JsonToYamlFrom() {
+      if (this.dataYaml.metadata) {
+        if (this.dataYaml.metadata.managedFields) {
+          delete this.dataYaml.metadata.managedFields
+        }
+      }
       if (JSON.stringify(this.dataYaml) !== '{}') {
         this.dataYaml = yaml.dump(this.dataYaml)
       } else {
