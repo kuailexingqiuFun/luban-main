@@ -93,8 +93,8 @@
    // import {listPodMetrics} from "@/api/k8s/pod"
    import TableOperations from "@/components/table-operations"
    import { AgeFormat } from '@/utils/age'
-   // import Terminal from "@/view/k8s/workloads/deployment/Terminal"
-   // import LogsConsole from "@/view/k8s/workloads/deployment/console"
+   import Terminal from "@/components/Terminal"
+   import LogsConsole from "@/components/console"
 export default {
   name: "DetailPods",
   props: {
@@ -105,8 +105,8 @@ export default {
     name: String,
   },
   components: { TableOperations,
-            // 'Application-terminal': Terminal,
-            // 'Application-LogsConsole': LogsConsole,
+            'Application-terminal': Terminal,
+            'Application-LogsConsole': LogsConsole,
     },
   watch: {
     selector: {
@@ -132,7 +132,7 @@ export default {
       dialogVisibleContainerlog: false,
       Title: "",
       currenturl: "",
-      path: process.env.VUE_APP_BASE_WS,
+      path: "ws://localhost:19999",
       terminal: {
         pid: 1,
         name: 'terminal',
@@ -164,12 +164,12 @@ export default {
     openTerminal(row){
       this.Title = '容器终端 '+  ' 容器名称: ' + row.metadata.name
       this.dialogVisibleTerminal = true
-      this.currenturl = this.path + "/k8s/terminal/Terminal?pod_name=" + row.metadata.name + '&namespace=' + row.metadata.namespace + '&cluster_id=' + this.cluster_id + '&name='+ this.name
+      this.currenturl = this.path + "/api/v1/kubernetes/proxy/terminal?pod_name=" + row.metadata.name + '&namespace=' + row.metadata.namespace + '&cluster_id=' + this.cluster_id + '&name='+ this.name
     },
     openTerminalLogs(row){
       this.Title = '容器日志 '+  ' 容器名称: ' + row.metadata.name
       this.dialogVisibleContainerlog = true
-      this.currenturl = this.path + "/k8s/terminal/appContainerLog?pod_name=" + row.metadata.name + '&namespace=' + row.metadata.namespace + '&cluster_id=' + this.cluster_id + '&name='+ this.name
+      this.currenturl = this.path + "/api/v1/kubernetes/proxy/logs?pod_name=" + row.metadata.name + '&namespace=' + row.metadata.namespace + '&cluster_id=' + this.cluster_id + '&name='+ this.name
     },
     closeTerminalDialog(){
       this.dialogVisibleTerminal = false

@@ -88,10 +88,6 @@ export default {
     }
   },
   methods: {
-    showYaml() {
-      this.show = !this.show
-      this.$emit("update:yamlShow", this.show)
-    },
     hasPodContainers() {
       if (this.item.spec?.template?.spec?.containers) {
         this.containers = this.item.spec.template.spec.containers
