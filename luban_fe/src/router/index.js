@@ -29,6 +29,11 @@ const routes = [
                 component: () => import('@/view/k8s/Nodes.vue')
             },
             {
+                path: '/kubernetes/workloads',
+                name: '工作负载',
+                component: () => import('@/view/workloads/indev.vue')
+            },
+            {
                 path: 'test',
                 name: 'Test',
                 component: () => import('@/view/Test.vue')
