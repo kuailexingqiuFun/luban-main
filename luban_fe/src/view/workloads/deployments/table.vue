@@ -103,3 +103,10 @@ export default {
   }
 }
 </script>
+<style scoped>
+.operate-span {
+  color: #409EFF;
+  cursor: pointer;
+  font-weight:bold;
+}
+</style>

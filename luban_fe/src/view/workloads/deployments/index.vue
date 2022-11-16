@@ -35,7 +35,7 @@
     </div>
 
     <!--子组件表格-->
-    <ListBlock :value="tableData" @edit="handleEditYAML"  @delete="handleDelete" />
+    <ListBlock :value="tableData" @edit="handleEditYAML" @detail="handleDetail" @delete="handleDelete" />
 
     <!--分页-->
     <el-pagination
@@ -91,6 +91,24 @@
         </div>
       </el-dialog>
     </div>
+    <div v-if="dialogDetailVisible">
+      <el-dialog
+          :visible.sync="dialogDetailVisible"
+          :title="title"
+          width="70%"
+          append-to-body
+          @close="handleDetailCancel">
+        <div class="container">
+          <el-tabs style="width:100%;">
+            <DetailBlock
+                ref="DetailBlock"
+                :cluster_id="cluster_id"
+                :form="currentValue"
+                @cancel="handleDetailCancel" />
+          </el-tabs>
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -101,11 +119,13 @@ import { NamespaceList } from '@/api/kubernetes/namespaces'
 import {getK8sObject} from "@/utils/k8s"
 import YamlFormBlock from '@/components/yaml/YamlBlock.vue'
 import ListBlock from './table.vue'
+import DetailBlock from './detail.vue'
 export default {
   name: 'Deployment',
   components: {
     ListBlock,
-    YamlFormBlock
+    YamlFormBlock,
+    DetailBlock
   },
   data() {
     return {
@@ -127,7 +147,8 @@ export default {
       namespace_list: [],
       namespace: '',
       dialogYamlVisible: false,
-      dialogAddYamlVisible: false
+      dialogAddYamlVisible: false,
+      dialogDetailVisible: false,
     }
   },
   created() {
@@ -168,10 +189,12 @@ export default {
       }
     },
     handleCurrentChange(val) {
-      console.log(val)
+      this.pageSize = val
+      this.getTableData()
     },
     handleSizeChange(val) {
-      console.log(val)
+      this.pageSize = val
+      this.getTableData()
     },
     async RefreshStatus() {
       if (this.cluster_id !== '') {
@@ -225,7 +248,7 @@ export default {
     },
     async handleSubmitAdd(value){
       const res = await  DeploymentsCreate(this.cluster_id, value.metadata.namespace, value)
-      if (res.data.code) {
+      if (res.code) {
         this.$message({
           type: 'error',
           message: '创建失败: '+ res.data.items.reason+": "+res.data.items.message,
@@ -279,7 +302,7 @@ export default {
         type: 'warning'
       }).then(async () => {
         const res = await  DeploymentsDelete(this.cluster_id, value.metadata.namespace, value.metadata.name, value)
-        if (res.data.code === 0) {
+        if (res.code === 0) {
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -293,6 +316,17 @@ export default {
               message: '已取消删除'
             })
           })
+    },
+    handleDetailCancel(){
+      this.dialogDetailVisible = false
+    },
+    async handleDetail(value) {
+      this.title = value.metadata.name
+      const res = await DeploymentsGet(this.cluster_id, value.metadata.namespace, value.metadata.name)
+      if(res.code === 0){
+        this.currentValue = res.data.items
+        this.dialogDetailVisible = true
+      }
     },
   }
 }
