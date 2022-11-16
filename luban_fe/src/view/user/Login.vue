@@ -78,14 +78,12 @@ export default {
             sessionStorage.removeItem("password")
           }
           UserLogin(this.ruleForm).then((res) => {
-            console.log(res)
-            if (res.data.code === 0) {
+            if (res.code === 0) {
               Message.success("登陆成功")
               localStorage.setItem("onLine", true)
-
-             // this.$router.push("/")
+             this.$router.push("/")
             } else {
-              Message.error(res.data.msg)
+              Message.error(res.msg)
             }
 
           })
