@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/dnsjia/luban/cmd/options"
 	"github.com/dnsjia/luban/pkg/model"
+	"github.com/dnsjia/luban/pkg/utils"
 	"github.com/dnsjia/luban/pkg/utils/kubernetes"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
@@ -36,6 +37,16 @@ type ProxyRequest struct {
 	LabelSelector string `form:"labelSelector" binding:"required"`
 	Page          int    `form:"page" binding:"required"`
 	PageSize      int    `form:"pageSize" binding:"required"`
+}
+
+type TerminalRequest struct {
+	Name      string `json:"name"  form:"name"`
+	PodName   string `json:"pod_name" form:"pod_name"`
+	Namespace string `json:"namespace" form:"namespace"`
+	ClusterId int    `json:"cluster_id" form:"cluster_id"`
+	XToken    string `json:"x-token" form:"x-token"`
+	Cols      int    `json:"cols" form:"cols"`
+	Rows      int    `json:"rows" form:"rows"`
 }
 
 // @Tags ProxyApi
@@ -244,4 +255,67 @@ func ProxyOption(c *gin.Context, proxy ProxyRequest, urlParam ProxyParamRequest)
 	}
 
 	return ret, err
+}
+
+// @Tags WsApi
+// @Summary  终端
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body kubernetesReq.TerminalRequest true "根据id获取api"
+// @Success 200 {object} response.Response{data=systemRes.SysAPIResponse} "根据id获取api,返回包括api详情"
+// @Router  /kubernetes/pods/terminal [get]
+func Terminal(c *gin.Context) {
+	var terminal TerminalRequest
+	_ = c.ShouldBindQuery(&terminal)
+
+	client, err := utils.NewKubeClient(terminal.ClusterId)
+	if err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+	}
+
+	var cluster model.K8SCluster
+	if err = options.DB.Model(&model.K8SCluster{}).Where("id = ?", terminal.ClusterId).First(&cluster).Error; err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+	}
+
+	//校验pod
+	kubeshell, err := utils.NewKubeShell(c.Writer, c.Request, nil)
+	if err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	cmd := []string{
+		"/bin/sh", "-c", fmt.Sprintf("clear;(bash || sh); export LINES=%d ; export COLUMNS=%d;", terminal.Rows, terminal.Cols),
+	}
+	if err := client.Pod.Exec(cmd, kubeshell, terminal.Namespace, terminal.PodName, terminal.Name); err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
+	}
+}
+
+// @Tags WsApi
+// @Summary  终端日志
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body kubernetesReq.TerminalRequest true "根据id获取api"
+// @Success 200 {object} response.Response{data=systemRes.SysAPIResponse} "根据id获取api,返回包括api详情"
+// @Router  /kubernetes/pods/logs [get]
+func ContainerLog(c *gin.Context) {
+	var terminal TerminalRequest
+	_ = c.ShouldBindQuery(&terminal)
+
+	kubeLogger, err := utils.NewKubeLogger(c.Writer, c.Request, nil)
+	if err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+	}
+
+	client, err := utils.NewKubeClient(terminal.ClusterId)
+	if err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+	}
+
+	client.Pod.ContainerLog(kubeLogger, terminal.Name, terminal.PodName, terminal.Namespace)
 }
