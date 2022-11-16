@@ -53,7 +53,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	if err := options.DB.Where("username = ?", userRequest.Username).Find(&user).Error; err == gorm.ErrRecordNotFound {
+	if err := options.DB.Where("username = ?", userRequest.Username).First(&user).Error; err == gorm.ErrRecordNotFound {
 		c.JSON(http.StatusOK, gin.H{
 			"code": types.ERROR,
 			"msg":  types.UserLoginFailed,
