@@ -33,23 +33,6 @@ import {Message} from "element-ui";
 export default {
   name: 'Login',
   data() {
-    var validateUsername = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入密码'));
-      } else {
-        if (this.ruleForm.checkPass !== '') {
-          this.$refs.ruleForm.validateField('checkPass');
-        }
-        callback();
-      }
-    };
-    var validatePassword = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请再次输入密码'));
-      } else {
-        callback();
-      }
-    };
     return {
       ruleForm: {
         username: sessionStorage.getItem("username"),
@@ -58,10 +41,10 @@ export default {
       },
       rules: {
         username: [
-          { validator: validateUsername, trigger: 'blur' }
+          {  required: true, message: '请输入用户',  trigger: 'change', }
         ],
         password: [
-          { validator: validatePassword, trigger: 'blur' }
+          {  required: true, message: '请输入密码',  trigger: 'change', }
         ],
       }
     };
