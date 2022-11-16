@@ -62,7 +62,7 @@ export default {
           }
           UserLogin(this.ruleForm).then((res) => {
             if (res.code === 0) {
-              Message.success("登陆成功")
+              Message.success(res.msg)
               localStorage.setItem("onLine", true)
              this.$router.push("/")
             } else {

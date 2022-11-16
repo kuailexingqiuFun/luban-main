@@ -27,7 +27,7 @@ instance.interceptors.request.use(config => {
 instance.interceptors.response.use(
     response => {
         if (response.status === 200) {
-            return Promise.resolve(response)
+            return Promise.resolve(response.data)
         } else {
             Message({
                 message: response.msg,

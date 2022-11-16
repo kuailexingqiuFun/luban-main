@@ -114,11 +114,11 @@ export default {
   methods: {
     async getTableData(page = this.page, pageSize = this.pageSize, cluster_id = this.cluster_id, namespace = this.namespace, searchInfo = this.searchInfo.name) {
       const res = await DeploymentsList(cluster_id, page, pageSize, namespace, searchInfo)
-      if (res.data.code === 0) {
-        this.tableData = res.data.data.items
-        this.total = res.data.data.total
-        this.page = res.data.data.page
-        this.pageSize = res.data.data.pageSize
+      if (res.code === 0) {
+        this.tableData = res.data.items
+        this.total = res.data.total
+        this.page = res.data.page
+        this.pageSize = res.data.pageSize
         if (this.cluster_id === 0) {
           this.searchInfo['cluster_id'] = this.cluster_list[0].id
           this.searchInfo['namespace'] = this.namespace_list[0].id
@@ -131,9 +131,9 @@ export default {
     },
     async getnamespace_list(cluster_id) {
       const res = await NamespaceList(cluster_id, '', '', '')
-      if (res.data.code === 0) {
+      if (res.code === 0) {
         this.namespace_list = []
-        for (const ns of res.data.data.items) {
+        for (const ns of res.data.items) {
           const item = {
             id: Math.random(),
             name: ns.metadata.name
@@ -186,8 +186,8 @@ export default {
     // 集群信息获取
     async getCluster_list() {
       const res = await getClusterList()
-      if (res.data.code === 0) {
-        this.cluster_list = res.data.data
+      if (res.code === 0) {
+        this.cluster_list = res.data
         this.searchInfo['cluster_id'] = this.cluster_list[0].id
         this.cluster_id = this.cluster_list[0].id
         await this.getnamespace_list(this.cluster_list[0].id)
@@ -200,8 +200,8 @@ export default {
     },
     async handleEditYAML(value) {
       const res = await DeploymentsGet(this.cluster_id, value.metadata.namespace, value.metadata.name)
-      if (res.data.code === 0) {
-        this.currentValue = res.data.data.items
+      if (res.code === 0) {
+        this.currentValue = res.data.items
       }
       this.title = '编辑 YAML'
       this.dialogYamlVisible = true
@@ -212,10 +212,10 @@ export default {
     async handleSubmit(value) {
       this.dialogYamlVisible = false
       const res = await DeploymentsUpdate(this.cluster_id, value.metadata.namespace, value.metadata.name, value)
-      if (res.data.code !== 0) {
+      if (res.code !== 0) {
         this.$message({
           type: 'error',
-          message: '更新失败: ' + res.data.items.reason + ': ' + res.data.items.message,
+          message: '更新失败: ' + res.items.reason + ': ' + res.items.message,
           showClose: true
         })
       } else {

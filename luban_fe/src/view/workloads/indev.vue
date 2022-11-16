@@ -1,33 +1,36 @@
 <template>
   <div>
-    <div class="container">
-      <el-tabs style="width:100%;">
-        <el-tab-pane label="Deployments">
-          <!--子组件-->
-          <Deployments />
-        </el-tab-pane>
-        <el-tab-pane label="DaemonSets">
-          <!--子组件-->
-          <Daemonsets />
-        </el-tab-pane>
-        <el-tab-pane label="StatefulSets">
-          <!--子组件-->
-          <StatefulSets />
-        </el-tab-pane>
-        <el-tab-pane label="Jobs">
-          <!--子组件-->
-          <Jobs />
-        </el-tab-pane>
-        <el-tab-pane label="CronJobs">
-          <!--子组件-->
-          <CronJobs />
-        </el-tab-pane>
-        <el-tab-pane label="Pods">
-          <!--子组件-->
-          <Pods />
-        </el-tab-pane>
-      </el-tabs>
-    </div>
+    <el-card>
+      <div class="container">
+        <el-tabs style="width:100%;">
+          <el-tab-pane label="Deployments">
+            <!--子组件-->
+            <Deployments />
+          </el-tab-pane>
+          <el-tab-pane label="DaemonSets">
+            <!--子组件-->
+            <Daemonsets />
+          </el-tab-pane>
+          <el-tab-pane label="StatefulSets">
+            <!--子组件-->
+            <StatefulSets />
+          </el-tab-pane>
+          <el-tab-pane label="Jobs">
+            <!--子组件-->
+            <Jobs />
+          </el-tab-pane>
+          <el-tab-pane label="CronJobs">
+            <!--子组件-->
+            <CronJobs />
+          </el-tab-pane>
+          <el-tab-pane label="Pods">
+            <!--子组件-->
+            <Pods />
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+    </el-card>
+
     <router-view />
   </div>
 </template>
