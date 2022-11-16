@@ -77,16 +77,16 @@ const router = new VueRouter({
 });
 
 // 导航守卫
-// router.beforeEach((to, from, next) => {
-//     // 从localStorage获取用户登陆标识
-//     if (!localStorage.getItem("onLine")) {
-//         if (to.path !== '/user/login') {
-//             return next('/user/login')
-//         }
-//     }
-//
-//     next()
-// });
+router.beforeEach((to, from, next) => {
+    // 从localStorage获取用户登陆标识
+    if (!localStorage.getItem("onLine")) {
+        if (to.path !== '/user/login') {
+            return next('/user/login')
+        }
+    }
+
+    next()
+});
 
 // 5。 导出router
 export default router

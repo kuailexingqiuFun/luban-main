@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/dnsjia/luban/api/middleware"
 
 	"github.com/gin-gonic/gin"
 
+	"github.com/dnsjia/luban/api/middleware"
 	"github.com/dnsjia/luban/api/routers"
 	"github.com/dnsjia/luban/cmd/options"
 	"github.com/dnsjia/luban/pkg/model"
