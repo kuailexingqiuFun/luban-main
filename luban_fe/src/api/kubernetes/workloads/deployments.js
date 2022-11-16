@@ -30,11 +30,11 @@ export const DeploymentsGet = (cluster_id, namespace, name) => {
 }
 
 export const DeploymentsCreate = (cluster_id, namespace, data) => {
-  return request({
-    url: `${BaseNamespaceUrl(cluster_id, namespace)}`,
-    method: 'post',
-    data
-  })
+  return  request(
+      "post",
+      `${BaseNamespaceUrl(cluster_id, namespace)}`,
+      data
+  )
 }
 
 export const DeploymentsUpdate = (cluster_id, namespace, name, data) => {
