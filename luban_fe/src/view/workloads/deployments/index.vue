@@ -35,7 +35,7 @@
     </div>
 
     <!--子组件表格-->
-    <ListBlock :value="tableData" @edit="handleEditYAML" />
+    <ListBlock :value="tableData" @edit="handleEditYAML"  @delete="handleDelete" />
 
     <!--分页-->
     <el-pagination
@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import { DeploymentsGet, DeploymentsList, DeploymentsUpdate, DeploymentsCreate} from '@/api/kubernetes/workloads/deployments'
+import { DeploymentsGet, DeploymentsList, DeploymentsUpdate, DeploymentsCreate, DeploymentsDelete} from '@/api/kubernetes/workloads/deployments'
 import { getClusterList } from '@/api/kubernetes/clusters'
 import { NamespaceList } from '@/api/kubernetes/namespaces'
 import {getK8sObject} from "@/utils/k8s"
@@ -271,7 +271,29 @@ export default {
         this.handleYamlAddCancel()
         this.getTableData()
       }
-    }
+    },
+    async handleDelete(value){
+      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        const res = await  DeploymentsDelete(this.cluster_id, value.metadata.namespace, value.metadata.name, value)
+        if (res.data.code === 0) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          await this.getTableData()
+        }
+      })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
+          })
+    },
   }
 }
 </script>

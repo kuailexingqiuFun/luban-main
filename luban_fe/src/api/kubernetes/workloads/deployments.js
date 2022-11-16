@@ -46,16 +46,16 @@ export const DeploymentsUpdate = (cluster_id, namespace, name, data) => {
 }
 
 export const DeploymentsPatch = (cluster_id, namespace, name, data) => {
-  return request({
-    url: `${BaseNamespaceUrl(cluster_id, namespace)}/${name}?namespace=${namespace}`,
-    method: 'patch',
-    data
-  })
+  return  request(
+      "patch",
+      `${BaseNamespaceUrl(cluster_id, namespace)}/${name}?namespace=${namespace}`,
+      data
+  )
 }
 
 export const DeploymentsDelete = (cluster_id, namespace, name) => {
-  return request({
-    url: `${BaseNamespaceUrl(cluster_id, namespace)}/${name}`,
-    method: 'delete'
-  })
+  return  request(
+      "delete",
+      `${BaseNamespaceUrl(cluster_id, namespace)}/${name}`
+  )
 }
