@@ -30,13 +30,12 @@
         </el-form-item>
         <el-form-item>
           <el-button size="mini" type="primary" icon="el-icon-refresh" @click="RefreshStatus">刷新</el-button>
-          <el-button size="mini" type="primary" icon="el-icon-circle-plus" @click="handleYAMLAdd">YAML</el-button>
-        </el-form-item>
+          <el-button size="mini" type="primary" icon="el-icon-circle-plus" @click="handleYAMLAdd" >YAML</el-button>        </el-form-item>
       </el-form>
     </div>
 
     <!--子组件表格-->
-    <ListBlock :value="tableData" @edit="handleEditYAML" />
+    <ListBlock :value="tableData" @edit="handleEditYAML"  @delete="handleDelete" />
 
     <!--分页-->
     <el-pagination
@@ -50,6 +49,27 @@
         @current-change="handleCurrentChange"
         @size-change="handleSizeChange"
     />
+
+    <div v-if="dialogAddYamlVisible">
+      <el-dialog
+          :visible.sync="dialogAddYamlVisible"
+          :title="title"
+          width="70%"
+          append-to-body
+          @close="handleYamlAddCancel"
+      >
+        <div class="container">
+          <YamlFormBlock
+              ref="FormBlock"
+              style="width:100%;"
+              :title="title"
+              :form="currentValue"
+              @submit="handleSubmitAdd"
+              @cancel="handleYamlAddCancel"
+          />
+        </div>
+      </el-dialog>
+    </div>
 
     <div v-if="dialogYamlVisible">
       <el-dialog
@@ -75,9 +95,10 @@
 </template>
 
 <script>
-import { DeploymentsGet, DeploymentsList, DeploymentsUpdate } from '@/api/kubernetes/workloads/deployments'
+import { DeploymentsGet, DeploymentsList, DeploymentsUpdate, DeploymentsCreate, DeploymentsDelete} from '@/api/kubernetes/workloads/deployments'
 import { getClusterList } from '@/api/kubernetes/clusters'
 import { NamespaceList } from '@/api/kubernetes/namespaces'
+import {getK8sObject} from "@/utils/k8s"
 import YamlFormBlock from '@/components/yaml/YamlBlock.vue'
 import ListBlock from './table.vue'
 export default {
@@ -105,7 +126,8 @@ export default {
       cluster_list: [],
       namespace_list: [],
       namespace: '',
-      dialogYamlVisible: false
+      dialogYamlVisible: false,
+      dialogAddYamlVisible: false
     }
   },
   created() {
@@ -142,6 +164,7 @@ export default {
         }
         this.namespace_list.push(this.defaultNamespace)
         this.searchInfo['namespace'] = this.namespace_list[0].name
+        this.namespace = this.namespace_list[0].name
       }
     },
     handleCurrentChange(val) {
@@ -173,7 +196,7 @@ export default {
     },
     // 切换集群
     async ClusterChange(value) {
-      this.information_id = value
+      this.cluster_id = value
       await this.getnamespace_list(value)
       await this.getTableData(1, 10)
     },
@@ -195,8 +218,28 @@ export default {
       }
     },
     // 添加
-    handleYAMLAdd() {
-      console.log('111')
+    async handleYAMLAdd(){
+      this.currentValue =  getK8sObject("deployments", this.namespace, "")
+      this.title = "创建"
+      this.dialogAddYamlVisible = true
+    },
+    async handleSubmitAdd(value){
+      const res = await  DeploymentsCreate(this.cluster_id, value.metadata.namespace, value)
+      if (res.data.code) {
+        this.$message({
+          type: 'error',
+          message: '创建失败: '+ res.data.items.reason+": "+res.data.items.message,
+          showClose: true
+        })
+      } else {
+        this.$message({
+          type: 'success',
+          message: '创建成功',
+          showClose: true
+        })
+        this.handleYamlAddCancel()
+        this.getTableData()
+      }
     },
     async handleEditYAML(value) {
       const res = await DeploymentsGet(this.cluster_id, value.metadata.namespace, value.metadata.name)
@@ -208,6 +251,7 @@ export default {
     },
     handleYamlAddCancel() {
       this.dialogYamlVisible = false
+      this.dialogAddYamlVisible = false
     },
     async handleSubmit(value) {
       this.dialogYamlVisible = false
@@ -227,7 +271,29 @@ export default {
         this.handleYamlAddCancel()
         this.getTableData()
       }
-    }
+    },
+    async handleDelete(value){
+      this.$confirm('此操作将永久删除, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        const res = await  DeploymentsDelete(this.cluster_id, value.metadata.namespace, value.metadata.name, value)
+        if (res.data.code === 0) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+          await this.getTableData()
+        }
+      })
+          .catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
+          })
+    },
   }
 }
 </script>
