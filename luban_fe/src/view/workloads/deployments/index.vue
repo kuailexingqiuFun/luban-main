@@ -86,7 +86,7 @@
               :title="title"
               :form="currentValue"
               @submit="handleSubmit"
-              @cancel=""
+              @cancel="handleYamlAddCancel"
           />
         </div>
       </el-dialog>

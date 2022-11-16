@@ -85,6 +85,9 @@ export default {
           delete this.dataYaml.metadata.managedFields
         }
       }
+      if (this.dataYaml.status) {
+          delete this.dataYaml.status
+      }
       if (JSON.stringify(this.dataYaml) !== '{}') {
         this.dataYaml = yaml.dump(this.dataYaml)
       } else {
