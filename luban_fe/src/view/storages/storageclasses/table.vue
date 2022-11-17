@@ -2,7 +2,11 @@
   <div>
     <el-table
         :data="value"
+        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+        border
+        row-key="ID"
         stripe
+        size="mini"
         style="width: 100%">
       <el-table-column
           label="名称"
@@ -13,15 +17,23 @@
         </template>
       </el-table-column>
       <el-table-column
-          label="命名空间"
-          prop="namespace"
+          label="提供商"
+          prop="provisioner"
           type="scope">
         <template slot-scope="scope" >
-          <span >{{ scope.row.metadata.namespace }} </span>
+          <span>{{ scope.row.provisioner }} </span>
         </template>
       </el-table-column>
       <el-table-column
-          label="创建时间"
+          label="回收策略"
+          prop="reclaimPolicy"
+          type="scope">
+        <template slot-scope="scope" >
+          <span>{{ scope.row.reclaimPolicy }} </span>
+        </template>
+      </el-table-column>
+      <el-table-column
+          label="存活时间"
           prop="creationTimestamp"
           type="scope">
         <template slot-scope="scope" >
@@ -30,11 +42,10 @@
       </el-table-column>
       <el-table-column
           fixed="right"
-          label="操作"
-          width="200">
+          label="操作">
         <template slot-scope="scope">
           <el-button @click="handleEdit(scope.row)" size="small" type="primary">编辑</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button @click="handleDelete(scope.row)" size="small" type="danger">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
