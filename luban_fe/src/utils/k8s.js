@@ -191,22 +191,22 @@ const statefulsetObj = (namespace) => {
     spec: {
       selector: {
         matchLabels: {
-          app: "nginx",
+          app: "web",
         },
       },
-      serviceName: "nginx",
+      serviceName: "web",
       replicas: 3,
       template: {
         metadata: {
           labels: {
-            app: "nginx",
+            app: "web",
           },
         },
         spec: {
           terminationGracePeriodSeconds: 10,
           containers: [
             {
-              name: "nginx",
+              name: "web",
               image: "nginx",
               ports: [
                 {
@@ -214,32 +214,10 @@ const statefulsetObj = (namespace) => {
                   name: "web",
                 },
               ],
-              volumeMounts: [
-                {
-                  name: "www",
-                  mountPath: "/usr/share/nginx/html",
-                },
-              ],
             },
           ],
         },
       },
-      volumeClaimTemplates: [
-        {
-          metadata: {
-            name: "www",
-          },
-          spec: {
-            accessModes: ["ReadWriteOnce"],
-            storageClassName: "my-storage-class",
-            resources: {
-              requests: {
-                storage: "1Gi",
-              },
-            },
-          },
-        },
-      ],
     },
   };
 };

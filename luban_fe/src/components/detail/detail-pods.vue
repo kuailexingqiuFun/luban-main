@@ -164,8 +164,10 @@ export default {
   },
   methods: {
     openTerminal(row){
+      console.log(row)
       this.Title = '容器终端 '+  ' 容器名称: ' + row.metadata.name
       this.dialogVisibleTerminal = true
+      console.log(this.name)
       this.currenturl = this.path + "/api/v1/kubernetes/proxy/terminal?pod_name=" + row.metadata.name + '&namespace=' + row.metadata.namespace + '&cluster_id=' + this.cluster_id + '&name='+ this.name
     },
     openTerminalLogs(row){
