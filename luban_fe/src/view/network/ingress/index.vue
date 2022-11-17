@@ -241,7 +241,7 @@ export default {
     },
     // 添加
     async handleYAMLAdd(){
-      this.currentValue =  getK8sObject("ingress", this.namespace, "")
+      this.currentValue =  getK8sObject("ingresses", this.namespace, "")
       this.title = "创建"
       this.dialogAddYamlVisible = true
     },
