@@ -78,3 +78,21 @@ func Login(c *gin.Context) {
 		"msg":  types.UserLoginSuccess,
 	})
 }
+
+func Manage(c *gin.Context) {
+	var users []model.User
+	if err := options.DB.Model(&model.User{}).Find(&users).Error; err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": types.SUCCESS,
+			"data": "",
+			"msg":  err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": types.SUCCESS,
+		"data": users,
+		"msg":  types.Success,
+	})
+}
