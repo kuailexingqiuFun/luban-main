@@ -1,15 +1,53 @@
 <template>
-<div>
- 访问控制
-</div>
+  <div>
+    <el-card>
+      <div class="container">
+        <el-tabs style="width:100%;">
+          <el-tab-pane label="Service Accounts">
+            <!--子组件-->
+            <ServiceAccounts />
+          </el-tab-pane>
+          <el-tab-pane label="Roles">
+            <!--子组件-->
+            <Roles />
+          </el-tab-pane>
+          <el-tab-pane label="Role Bindings">
+            <!--子组件-->
+            <RoleBindings />
+          </el-tab-pane>
+          <el-tab-pane label="Cluster Roles">
+            <!--子组件-->
+            <ClusterRoles />
+          </el-tab-pane>
+          <el-tab-pane label="Cluster Role Bindings">
+            <!--子组件-->
+            <ClusterRoleBindings />
+          </el-tab-pane>
+          <el-tab-pane label="Pod Security Policies">
+            <!--子组件-->
+            <PodSecurityPolicies />
+          </el-tab-pane>
+        </el-tabs>
+      </div>
+    </el-card>
+  </div>
 </template>
-
 <script>
+import ServiceAccounts from './serviceaccounts/index.vue'
+import Roles from './roles/index.vue'
+import RoleBindings from './rolebindings/index.vue'
+import ClusterRoles from './clusterroles/index.vue'
+import ClusterRoleBindings from './clusterrolebindings/index.vue'
+import PodSecurityPolicies from './podsecuritypolicies/index.vue'
 export default {
-  name: "index.vue"
+  name: 'AccessControls',
+  components: {
+    ServiceAccounts,
+    Roles,
+    RoleBindings,
+    ClusterRoles,
+    ClusterRoleBindings,
+    PodSecurityPolicies,
+  }
 }
 </script>
-
-<style scoped>
-
-</style>
