@@ -1,45 +1,48 @@
 import request from "../plugin/utils/request"
 
+const BaseUrl = () => {
+    return `http://localhost:19999/api/v1/kubernetes/proxy/`
+}
 // const apiV1Url = (cluster_id, type) => {
 //     return `/k8s/proxy/${cluster_id}/api/v1/${type}`
 // }
 const apiV1UrlWithNsUrl = (cluster_id, type, namespaces) => {
-    return `/k8s/proxy/${cluster_id}/api/v1/namespaces/${namespaces}/${type}`
+    return `${BaseUrl()}${cluster_id}/api/v1/namespaces/${namespaces}/${type}`
 }
 // const appsV1Url = (cluster_id, type) => {
 //     return `/api/v1/proxy/${cluster_id}/k8s/apis/apps/v1/${type}`
 // }
 const appsV1UrlWithNsUrl = (cluster_id, type, namespaces) => {
-    return `/k8s/proxy/${cluster_id}/apis/apps/v1/namespaces/${namespaces}/${type}`
+    return `${BaseUrl()}${cluster_id}/apis/apps/v1/namespaces/${namespaces}/${type}`
 }
 // const batchV1beta1Url = (cluster_id, type) => {
 //     return `/k8s/proxy/${cluster_id}/apis/batch/v1beta1/${type}`
 // }
 const batchV1beta1WithNsUrl = (cluster_id, type, namespaces) => {
-    return `/k8s/proxy/${cluster_id}/apis/batch/v1beta1/namespaces/${namespaces}/${type}`
+    return `${BaseUrl}${cluster_id}/apis/batch/v1beta1/namespaces/${namespaces}/${type}`
 }
 // const batchV1Url = (cluster_id, type) => {
 //     return `/k8s/proxy/${cluster_id}/apis/batch/v1/${type}`
 // }
 
 const batchV1WithNsUrl = (cluster_id, type, namespaces) => {
-    return `/k8s/proxy/${cluster_id}/apis/batch/v1/namespaces/${namespaces}/${type}`
+    return `${BaseUrl()}${cluster_id}/apis/batch/v1/namespaces/${namespaces}/${type}`
 }
 
 const apiNsUrl = (cluster_id, version, namespace, kind) => {
-    return `/k8s/proxy/${cluster_id}/api/${version}/namespaces/${namespace}/${kind}`
+    return `$${BaseUrl()}${cluster_id}/api/${version}/namespaces/${namespace}/${kind}`
 }
 
 const apiUrl = (cluster_id, version, kind) => {
-    return `/k8s/proxy/${cluster_id}/api/${version}/${kind}`
+    return `${BaseUrl()}${cluster_id}/api/${version}/${kind}`
 }
 
 const apisNsUrl = (cluster_id, version, group, namespace, kind) => {
-    return `/k8s/proxy/${cluster_id}/apis/${group}/${version}/namespaces/${namespace}/${kind}`
+    return `${BaseUrl()}${cluster_id}/apis/${group}/${version}/namespaces/${namespace}/${kind}`
 }
 
 const apisUrl = (cluster_id, version, group, kind) => {
-    return `/k8s/proxy/${cluster_id}/apis/${group}/${version}/${kind}`
+    return `${BaseUrl()}${cluster_id}/apis/${group}/${version}/${kind}`
 }
 
 export function postYaml (cluster_id, kind, data) {
@@ -161,28 +164,27 @@ export function updateWorkLoad (cluster_id, type, namespace, name, data) {
         case "statefulsets":
         case "daemonsets":
 
-            return service({
-                url: `${appsV1UrlWithNsUrl(cluster_id, type, namespace)}/${name}`,
-                method: 'put',
+            return request(
+                'put', `${appsV1UrlWithNsUrl(cluster_id, type, namespace)}/${name}`,
                 data
-            })
+            )
         case "cronjobs":
-            return service({
-                url: `${batchV1beta1WithNsUrl(cluster_id, type, namespace)}/${name}`,
-                method: 'put',
+            return request(
+                'put',
+                `${batchV1beta1WithNsUrl(cluster_id, type, namespace)}/${name}`,
                 data
-            })
+               )
         case "pods":
-            return service({
-                url: `${apiV1UrlWithNsUrl(cluster_id, type, namespace)}/${name}`,
-                method: 'put',
+            return request(
+                'put',
+                `${apiV1UrlWithNsUrl(cluster_id, type, namespace)}/${name}`,
                 data
-            })
+            )
         case "jobs":
-            return service({
-                url: `${batchV1WithNsUrl(cluster_id, type, namespace)}/${name}`,
-                method: 'put',
+            return request(
+                'put',
+                `${batchV1WithNsUrl(cluster_id, type, namespace)}/${name}`,
                 data
-            })
+            )
     }
 }

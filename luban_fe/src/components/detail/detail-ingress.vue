@@ -36,7 +36,7 @@
 </template>
 
 <script>
-// import { ingressList } from "@/api/k8s/ingress"
+import {IngressesList} from "@/api/kubernetes/ingress";
 
 export default {
   name: "DetailIngress",
@@ -57,26 +57,26 @@ export default {
     search() {
       this.ingress = []
       this.loading= true
-      // ingressList("", "", this.cluster_id, this.name, this.namespace, "").then((res) => {
-      //   if (res.data.items === null) {
-      //     return
-      //   }
-      //   for (const ing of res.data.items) {
-      //     if ((ing.metadata.name === this.name)) {
-      //       if (ing.spec.rules) {
-      //         for (const i of ing.spec.rules) {
-      //           var item = {
-      //             host: i.host,
-      //           }
-      //           if (i.http) {
-      //             item.details = i.http.paths
-      //           }
-      //           this.ingress.push(item)
-      //         }
-      //       }
-      //     }
-      //   }
-      // })
+      IngressesList(this.cluster_id, "", "", this.namespace, this.name,  "", "").then((res) => {
+        if (res.data.items === null) {
+          return
+        }
+        for (const ing of res.data.items) {
+          if ((ing.metadata.name === this.name)) {
+            if (ing.spec.rules) {
+              for (const i of ing.spec.rules) {
+                var item = {
+                  host: i.host,
+                }
+                if (i.http) {
+                  item.details = i.http.paths
+                }
+                this.ingress.push(item)
+              }
+            }
+          }
+        }
+      })
     },
   },
   created() {

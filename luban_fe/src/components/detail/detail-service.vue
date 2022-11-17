@@ -18,7 +18,7 @@
 </template>
 
 <script>
-// import { getServiceList } from "@/api/k8s/service"
+import {ServicesList} from "@/api/kubernetes/services";
 
 export default {
   name: "DetailSvcs",
@@ -37,20 +37,20 @@ export default {
   methods: {
     async search() {
       this.services = []
-      // const res = await getServiceList("", "", this.cluster_id, this.name, this.namespace, "")
-      // if (res.data.items === null) {
-      //   return
-      // }
-      //   for (const svc of res.data.items) {
-      //     if (svc.metadata.name === this.name) {
-      //       if (svc.spec.ports) {
-      //         for (const p of svc.spec.ports) {
-      //           this.services.push(p)
-      //         }
-      //       }
-      //     }
-      //   }
-      //   this.loading = false
+      const res = await ServicesList( this.cluster_id,"", "", this.namespace, this.name,  "")
+      if (res.data.items === null) {
+        return
+      }
+        for (const svc of res.data.items) {
+          if (svc.metadata.name === this.name) {
+            if (svc.spec.ports) {
+              for (const p of svc.spec.ports) {
+                this.services.push(p)
+              }
+            }
+          }
+        }
+        this.loading = false
     },
   },
   created() {
