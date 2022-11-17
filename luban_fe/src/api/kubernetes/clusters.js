@@ -6,3 +6,11 @@ export const getClusterList = (params) =>  {
         "http://localhost:19999/api/v1/kubernetes/clusters",
         params)
 }
+
+export const createCluster = (params) => {
+   return request(
+       "post",
+       "http://localhost:19999/api/v1/kubernetes/cluster",
+       params
+   )
+}

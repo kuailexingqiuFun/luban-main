@@ -2,6 +2,7 @@ package k8s
 
 import (
 	"context"
+	"github.com/dnsjia/luban/api/types"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -12,8 +13,10 @@ import (
 )
 
 func CreateCluster(c *gin.Context) {
-	var cluster model.K8SCluster
-	if err := c.ShouldBindJSON(cluster); err != nil {
+	var (
+		clusterReq types.ClusterRequest
+	)
+	if err := c.ShouldBindJSON(&clusterReq); err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
 			"data": "",
@@ -23,7 +26,7 @@ func CreateCluster(c *gin.Context) {
 	}
 
 	// 创建clientSet
-	clientSet, err := GetClientSet(cluster.ClusterName)
+	clientSet, err := GetClientSet(clusterReq.KubeConfig)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
@@ -45,8 +48,12 @@ func CreateCluster(c *gin.Context) {
 	}
 
 	// 插入数据
-	cluster.NodeNumber = len(nodeList.Items)
-	if err := options.DB.Model(&model.K8SCluster{}).Create(&cluster).Error; err != nil {
+	if err := options.DB.Model(&model.K8SCluster{}).Create(&model.K8SCluster{
+		ClusterName: clusterReq.ClusterName,
+		KubeConfig:  clusterReq.KubeConfig,
+		ApiAddress:  clusterReq.ApiAddress,
+		NodeNumber:  len(nodeList.Items),
+	}).Error; err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
 			"data": "",
