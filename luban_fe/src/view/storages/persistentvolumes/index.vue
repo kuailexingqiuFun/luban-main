@@ -12,16 +12,6 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="命名空间">
-          <el-select v-model="searchInfo.namespace" size="mini" filterable placeholder="请选择命名空间" @change="NamespaceChange">
-            <el-option
-                v-for="item in namespace_list"
-                :key="item.id"
-                :label="item.name"
-                :value="item.name"
-            />
-          </el-select>
-        </el-form-item>
         <el-form-item>
           <el-input v-model="searchInfo.name" size="mini" placeholder="名称" @change="Searchapp" />
         </el-form-item>
@@ -113,9 +103,8 @@
 </template>
 
 <script>
-import { SecretsList, SecretsCreate, SecretsDelete, SecretsGet, SecretsUpdate} from '@/api/kubernetes/secrets'
+import { PersistentVolumesList, PersistentVolumesCreate, PersistentVolumesDelete, PersistentVolumesGet, PersistentVolumesUpdate} from '@/api/kubernetes/persistentvolumes'
 import { getClusterList } from '@/api/kubernetes/clusters'
-import { NamespaceList } from '@/api/kubernetes/namespaces'
 import {getK8sObject} from "@/utils/k8s"
 import YamlFormBlock from '@/components/yaml/YamlBlock.vue'
 import ListBlock from './table.vue'
@@ -135,10 +124,6 @@ export default {
       searchInfo: {
         'name': ''
       },
-      defaultNamespace: {
-        'id': 0,
-        'name': 'All Namespaces'
-      },
       cluster_id: 1,
       currentValue: {},
       cluster_list: [],
@@ -154,7 +139,7 @@ export default {
   },
   methods: {
     async getTableData(page = this.page, pageSize = this.pageSize, cluster_id = this.cluster_id, namespace = this.namespace, searchInfo = this.searchInfo.name) {
-      const res = await SecretsList(cluster_id, page, pageSize, namespace, searchInfo, '', '')
+      const res = await PersistentVolumesList(cluster_id, page, pageSize, namespace, searchInfo, '', '')
       if (res.code === 0) {
         this.tableData = res.data.items
         this.total = res.data.total
@@ -166,24 +151,7 @@ export default {
           this.cluster_id = this.cluster_list[0].id
           this.namespace = this.namespace_list[0].name
           await this.ClusterChange(this.cluster_list[0].id)
-          await this.NamespaceChange(this.namespace_list[0].id)
         }
-      }
-    },
-    async getnamespace_list(cluster_id) {
-      const res = await NamespaceList(cluster_id, '', '', '')
-      if (res.code === 0) {
-        this.namespace_list = []
-        for (const ns of res.data.items) {
-          const item = {
-            id: Math.random(),
-            name: ns.metadata.name
-          }
-          this.namespace_list.push(item)
-        }
-        this.namespace_list.push(this.defaultNamespace)
-        this.searchInfo['namespace'] = this.namespace_list[0].name
-        this.namespace = this.namespace_list[0].name
       }
     },
     handleCurrentChange(val) {
@@ -218,15 +186,8 @@ export default {
     // 切换集群
     async ClusterChange(value) {
       this.cluster_id = value
-      await this.getnamespace_list(value)
       await this.getTableData(1, 10)
     },
-    // 切换命名空间
-    async NamespaceChange(value) {
-      this.namespace = value
-      await this.getTableData()
-    },
-
     // 集群信息获取
     async getCluster_list() {
       const res = await getClusterList()
@@ -234,18 +195,17 @@ export default {
         this.cluster_list = res.data
         this.searchInfo['cluster_id'] = this.cluster_list[0].id
         this.cluster_id = this.cluster_list[0].id
-        await this.getnamespace_list(this.cluster_list[0].id)
         await this.getTableData(1, 10)
       }
     },
     // 添加
     async handleYAMLAdd(){
-      this.currentValue =  getK8sObject("secrets", this.namespace, "")
+      this.currentValue =  getK8sObject("persistentvolumes", this.namespace, "")
       this.title = "创建"
       this.dialogAddYamlVisible = true
     },
     async handleSubmitAdd(value){
-      const res = await  SecretsCreate(this.cluster_id, value.metadata.namespace, value)
+      const res = await  PersistentVolumesCreate(this.cluster_id, value.metadata.namespace, value)
       if (res.code) {
         this.$message({
           type: 'error',
@@ -263,7 +223,7 @@ export default {
       }
     },
     async handleEditYAML(value) {
-      const res = await SecretsGet(this.cluster_id, value.metadata.namespace, value.metadata.name)
+      const res = await PersistentVolumesGet(this.cluster_id, value.metadata.namespace, value.metadata.name)
       if (res.code === 0) {
         this.currentValue = res.data.items
       }
@@ -276,7 +236,7 @@ export default {
     },
     async handleSubmit(value) {
       this.dialogYamlVisible = false
-      const res = await SecretsUpdate(this.cluster_id, value.metadata.namespace, value.metadata.name, value)
+      const res = await PersistentVolumesUpdate(this.cluster_id, value.metadata.namespace, value.metadata.name, value)
       if (res.code !== 0) {
         this.$message({
           type: 'error',
@@ -299,7 +259,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        const res = await  SecretsDelete(this.cluster_id, value.metadata.namespace, value.metadata.name, value)
+        const res = await  PersistentVolumesDelete(this.cluster_id, value.metadata.namespace, value.metadata.name, value)
         if (res.code === 0) {
           this.$message({
             type: 'success',
@@ -320,7 +280,7 @@ export default {
     },
     async handleDetail(value) {
       this.title = value.metadata.name
-      const res = await SecretsGet(this.cluster_id, value.metadata.namespace, value.metadata.name)
+      const res = await PersistentVolumesGet(this.cluster_id, value.metadata.namespace, value.metadata.name)
       if(res.code === 0){
         this.currentValue = res.data.items
         this.dialogDetailVisible = true
