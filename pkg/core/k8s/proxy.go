@@ -90,6 +90,11 @@ func compatibleClusterVersion(minor int, path *string) {
 			p = strings.Replace(p, "networking.k8s.io/v1", "networking.k8s.io/v1beta1", -1)
 		}
 	}
+	if minor > 18 {
+		if strings.Contains(p, "/apis/batch/v1beta1") && strings.Contains(p, "cronjobs") {
+			p = strings.Replace(p, "/apis/batch/v1beta1", "/apis/batch/v1", -1)
+		}
+	}
 	*path = p
 }
 
