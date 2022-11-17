@@ -65,7 +65,7 @@ export default {
       this.monacoEditor = monaco.editor.create(document.getElementById('code-editor'), {
         value: this.dataYaml, // 初始文字
         language: 'yaml', // 语言
-        readOnly: false, // 是否只读
+        readOnly: this.readOnly, // 是否只读
         automaticLayout: true, // 自动布局
         foldingStrategy: 'indentation',
         theme: this.theme, // vs | hc-black | vs-dark
@@ -84,9 +84,6 @@ export default {
         if (this.dataYaml.metadata.managedFields) {
           delete this.dataYaml.metadata.managedFields
         }
-      }
-      if (this.dataYaml.status) {
-          delete this.dataYaml.status
       }
       if (JSON.stringify(this.dataYaml) !== '{}') {
         this.dataYaml = yaml.dump(this.dataYaml)
