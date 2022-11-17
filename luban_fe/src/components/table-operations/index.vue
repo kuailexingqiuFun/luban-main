@@ -6,7 +6,6 @@
       <fu-table-column-select type="dialog" :columns="columns" v-if="columns"/>
     </template>
     <template v-slot:default="{row}">
-
       <el-button v-for="(btn, i) in defaultButtons" :key="i" v-bind="btn" @click="btn.click(row)"
                        :disabled="disableButton(btn, row)"/>
       <el-button :buttons="moreButtons" :row="row" v-if="moreButtons.length > 0"/>

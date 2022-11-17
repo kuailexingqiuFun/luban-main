@@ -90,7 +90,7 @@
 
 <script>
    import { PodsList } from "@/api/kubernetes/workloads/pods"
-   // import {listPodMetrics} from "@/api/k8s/pod"
+   import { PodsMetricsList } from "@/api/kubernetes/metrics"
    import TableOperations from "@/components/table-operations"
    import { AgeFormat } from '@/utils/age'
    import Terminal from "@/components/Terminal"
@@ -142,6 +142,7 @@ export default {
       buttons: [
         {
           label: "终端",
+          size: "mini",
           icon: "iconfont iconline-terminalzhongduan",
           click: (row) => {
             this.openTerminal(row)
@@ -149,7 +150,8 @@ export default {
         },
         {
           label: "日志",
-          icon: "el-icon-tickets",
+          size: "mini",
+          icon: "iconfont el-icon-tickets",
           click: (row) => {
             this.openTerminalLogs(row)
           },
@@ -182,11 +184,11 @@ export default {
       PodsList(this.cluster_id, '', '', this.namespace,'', this.selector, '').then((res) => {
         this.pods = res.data.items
         this.loading = false
-        // listPodMetrics(this.cluster_id, this.namespace, this.selector).then(res => {
-        //   if (res.code === 0) {
-        //     this.podUsage = res.data.items
-        //   }
-        // })
+        PodsMetricsList(this.cluster_id, this.namespace, this.selector).then(res => {
+          if (res.code === 0) {
+            this.podUsage = res.data.items
+          }
+        })
       })
     },
     getPodRestartCounts(containerStatuses){
@@ -248,8 +250,4 @@ export default {
 </script>
 
 <style scoped>
-    .btnSize {
-        width: 28px;
-        height: 28px;
-    }
 </style>
