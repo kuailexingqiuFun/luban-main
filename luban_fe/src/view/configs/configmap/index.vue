@@ -100,9 +100,10 @@
           @close="handleDetailCancel">
         <div class="container">
           <el-tabs style="width:100%;">
-            <DetailBlock
+            <YamlFormBlock
                 ref="DetailBlock"
-                :value="currentValue"
+                :form="currentValue"
+                :readOnly="true"
                 @cancel="handleDetailCancel" />
           </el-tabs>
         </div>
@@ -112,19 +113,17 @@
 </template>
 
 <script>
-import { IngressesList, IngressesGet, IngressesUpdate, IngressesCreate, IngressesDelete} from '@/api/kubernetes/ingress'
+import { ConfigmapsList, ConfigmapsGet, ConfigmapsUpdate, ConfigmapsCreate, ConfigmapsDelete} from '@/api/kubernetes/configmaps'
 import { getClusterList } from '@/api/kubernetes/clusters'
 import { NamespaceList } from '@/api/kubernetes/namespaces'
 import {getK8sObject} from "@/utils/k8s"
 import YamlFormBlock from '@/components/yaml/YamlBlock.vue'
 import ListBlock from './table.vue'
-import DetailBlock from './detail.vue'
 export default {
   name: 'Deployment',
   components: {
     ListBlock,
     YamlFormBlock,
-    DetailBlock
   },
   data() {
     return {
@@ -155,7 +154,7 @@ export default {
   },
   methods: {
     async getTableData(page = this.page, pageSize = this.pageSize, cluster_id = this.cluster_id, namespace = this.namespace, searchInfo = this.searchInfo.name) {
-      const res = await IngressesList(cluster_id, page, pageSize, namespace, searchInfo, '', '')
+      const res = await ConfigmapsList(cluster_id, page, pageSize, namespace, searchInfo, '', '')
       if (res.code === 0) {
         this.tableData = res.data.items
         this.total = res.data.total
@@ -241,12 +240,12 @@ export default {
     },
     // 添加
     async handleYAMLAdd(){
-      this.currentValue =  getK8sObject("ingresses", this.namespace, "")
+      this.currentValue =  getK8sObject("configmaps", this.namespace, "")
       this.title = "创建"
       this.dialogAddYamlVisible = true
     },
     async handleSubmitAdd(value){
-      const res = await  IngressesCreate(this.cluster_id, value.metadata.namespace, value)
+      const res = await  ConfigmapsCreate(this.cluster_id, value.metadata.namespace, value)
       if (res.code) {
         this.$message({
           type: 'error',
@@ -264,7 +263,7 @@ export default {
       }
     },
     async handleEditYAML(value) {
-      const res = await IngressesGet(this.cluster_id, value.metadata.namespace, value.metadata.name)
+      const res = await ConfigmapsGet(this.cluster_id, value.metadata.namespace, value.metadata.name)
       if (res.code === 0) {
         this.currentValue = res.data.items
       }
@@ -277,7 +276,7 @@ export default {
     },
     async handleSubmit(value) {
       this.dialogYamlVisible = false
-      const res = await IngressesUpdate(this.cluster_id, value.metadata.namespace, value.metadata.name, value)
+      const res = await ConfigmapsUpdate(this.cluster_id, value.metadata.namespace, value.metadata.name, value)
       if (res.code !== 0) {
         this.$message({
           type: 'error',
@@ -300,7 +299,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        const res = await  IngressesDelete(this.cluster_id, value.metadata.namespace, value.metadata.name, value)
+        const res = await  ConfigmapsDelete(this.cluster_id, value.metadata.namespace, value.metadata.name, value)
         if (res.code === 0) {
           this.$message({
             type: 'success',
@@ -321,7 +320,7 @@ export default {
     },
     async handleDetail(value) {
       this.title = value.metadata.name
-      const res = await IngressesGet(this.cluster_id, value.metadata.namespace, value.metadata.name)
+      const res = await ConfigmapsGet(this.cluster_id, value.metadata.namespace, value.metadata.name)
       if(res.code === 0){
         this.currentValue = res.data.items
         this.dialogDetailVisible = true
