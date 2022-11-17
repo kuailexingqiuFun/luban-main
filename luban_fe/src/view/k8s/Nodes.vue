@@ -1,30 +1,49 @@
 <template>
   <div>
-    <button @click="listPods">跳转集群管理</button>
-
+    <el-card>
+      <el-table
+          :data="tableData"
+          style="width: 100%">
+        <el-table-column
+            prop="name"
+            label="节点名称">
+        </el-table-column>
+        <el-table-column
+            prop="name"
+            label="状态">
+        </el-table-column>
+        <el-table-column
+            prop="address"
+            label="角色">
+        </el-table-column>
+        <el-table-column
+            prop="address"
+            label="版本">
+        </el-table-column>
+        <el-table-column
+            prop="address"
+            label="创建时间">
+        </el-table-column>
+      </el-table>
+    </el-card>
   </div>
 </template>
 
 <script>
-import {ListPods} from "@/api/demo";
+import {ListNodes} from "@/api/k8s";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Nodes",
+  created() {
+    this.GetNodes("test")
+  },
   methods: {
-     toManage() {
-       this.$router.push({
-         name: 'ClusterManage'
-       })
-     },
-    listPods(clusterName, namespace) {
-       clusterName = "test"
-      namespace = "default"
-      ListPods(clusterName, namespace).then(res => {
-        console.log(res, "pods all")
+    GetNodes(clusterName) {
+      ListNodes(clusterName).then((res) => {
+        console.log(res, "xxx")
       })
-    },
-
+    }
   }
 }
 </script>

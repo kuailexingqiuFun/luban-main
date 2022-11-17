@@ -42,7 +42,7 @@
                 </template>
                 <el-menu-item-group>
                   <el-menu-item index="/kubernetes/cluster">集群管理</el-menu-item>
-                  <el-menu-item index="/kubernetes/node">节点管理</el-menu-item>
+                  <el-menu-item index="/kubernetes/nodes">节点管理</el-menu-item>
                   <el-menu-item index="/kubernetes/workloads">工作负载</el-menu-item>
                   <el-menu-item index="/kubernetes/network">服务发现</el-menu-item>
                   <el-menu-item index="/kubernetes/configs">配置</el-menu-item>

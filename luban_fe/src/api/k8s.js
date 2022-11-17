@@ -1,3 +1,11 @@
 import  request from '../plugin/utils/request'
 
-export const ListNodes = (params) => request("get", "http://baidu.com/api/v1/k8s/clusterName/nodes", params)
+const listNodesUrl = (clusterName) => {
+    return `http://localhost:19999/api/v1/kubernetes/${clusterName}/nodes`
+}
+
+export function ListNodes(clusterName, params) {
+    let url = listNodesUrl(clusterName, params)
+
+    return request("get", url, params)
+}
