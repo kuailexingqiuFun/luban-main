@@ -19,12 +19,12 @@ const routes = [
                 component: () => import('@/view/Index')
             },
             {
-                path: '/k8s/cluster',
+                path: '/kubernetes/cluster',
                 name: 'ClusterManage',
                 component: () => import('@/view/k8s/ClusterManage.vue')
             },
             {
-                path: '/k8s/nodes',
+                path: '/kubernetes/nodes',
                 name: 'Nodes',
                 component: () => import('@/view/k8s/Nodes.vue')
             },

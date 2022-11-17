@@ -6,6 +6,22 @@
         <div style="display: flex; align-items: center">
           <span style="font-size: large; margin-left: 30px">多集群管理平台</span>
         </div>
+
+        <div style="display: flex; align-items: center">
+          <div style="vertical-align: middle;margin-top: 30px;margin-right: 28px;cursor: pointer">
+            <el-dropdown>
+              <span>
+                <el-avatar :size="30" :src="avatarImg"></el-avatar>
+              </span>
+
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item @click.native="logout()">注销登陆</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </div>
+        </div>
       </el-header>
       <el-container>
         <el-aside style="background-color: #f5f5f5">
@@ -14,39 +30,31 @@
                 active-text-color="#ffd04b"
                 background-color="#fff"
                 border-right="none"
-                default-active="1"
+                :default-active="this.$route.path"
+                :default-openeds="['1']"
                 text-color="#555"
                 router
                 class="el-menu-vertical-no-collapse">
               <el-submenu index="1">
                 <template slot="title">
-                  <i class="el-icon-location"></i>
+                  <i class="el-icon-s-platform"></i>
                   <span>容器管理</span>
                 </template>
                 <el-menu-item-group>
+                  <el-menu-item index="/kubernetes/cluster">集群管理</el-menu-item>
                   <el-menu-item index="/kubernetes/workloads">工作负载</el-menu-item>
-                  <el-menu-item index="1-2">选项2</el-menu-item>
                 </el-menu-item-group>
-                <el-menu-item-group title="分组2">
-                  <el-menu-item index="1-3">选项3</el-menu-item>
-                </el-menu-item-group>
-                <el-submenu index="1-4">
-                  <template slot="title">选项4</template>
-                  <el-menu-item index="1-4-1">选项1</el-menu-item>
-                </el-submenu>
               </el-submenu>
-              <el-menu-item index="2">
-                <i class="el-icon-menu"></i>
-                <span slot="title">导航二</span>
-              </el-menu-item>
-              <el-menu-item index="3" disabled>
-                <i class="el-icon-document"></i>
-                <span slot="title">导航三</span>
-              </el-menu-item>
-              <el-menu-item index="4">
-                <i class="el-icon-setting"></i>
-                <span slot="title">导航四</span>
-              </el-menu-item>
+
+              <el-submenu index="2">
+                <template slot="title">
+                  <i class="el-icon-user-solid"></i>
+                  <span>用户管理</span>
+                </template>
+                <el-menu-item-group>
+                  <el-menu-item index="/user/userList">用户列表</el-menu-item>
+                </el-menu-item-group>
+              </el-submenu>
             </el-menu>
           </el-col>
         </el-aside>
@@ -60,7 +68,18 @@
 
 <script>
 export default {
-  name: "Layout"
+  name: "Layout",
+  data() {
+    return {
+      avatarImg: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'
+    }
+  },
+  methods: {
+    logout() {
+      localStorage.removeItem("onLine")
+      this.$router.push("/user/login")
+    },
+  }
 }
 </script>
 
