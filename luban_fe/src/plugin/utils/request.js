@@ -7,7 +7,7 @@ axios.defaults.headers.put['Content-Type'] = 'application/json;charset=UTF-8';
 
 // 创建axios实例
 const instance = axios.create({
-    baseURL: process.env.BASE_URL,
+    baseURL: process.env.VUE_APP_URL,
     timeout: 3000,
 })
 

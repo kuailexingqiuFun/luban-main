@@ -1,7 +1,7 @@
 import request from "../../plugin/utils/request"
 
 const BaseUrl = (cluster_id) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/api/v1/namespaces`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/api/v1/namespaces`
 }
 
 export const NamespaceList = (cluster_id, page, pageSize, keywords) => {

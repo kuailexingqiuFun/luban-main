@@ -1,7 +1,7 @@
 import  request from '../plugin/utils/request'
 
 const listNodesUrl = (clusterName) => {
-    return `http://localhost:19999/api/v1/kubernetes/${clusterName}/nodes`
+    return `/api/v1/kubernetes/${clusterName}/nodes`
 }
 
 export function ListNodes(clusterName, params) {

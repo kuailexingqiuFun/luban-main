@@ -1,7 +1,7 @@
 import request from "../../plugin/utils/request"
 
 const BaseUrl = (cluster_id, namespace) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/apis/apps/v1/namespaces/${namespace}/replicasets`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/apis/apps/v1/namespaces/${namespace}/replicasets`
 }
 
 export function ReplicaSetsList(cluster_id, namespace, selector) {

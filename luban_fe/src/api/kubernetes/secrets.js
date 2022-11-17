@@ -2,11 +2,11 @@ import request from "../../plugin/utils/request"
 
 
 const BaseUrl = (cluster_id) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/api/v1/secrets`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/api/v1/secrets`
 }
 
 const BaseNamespaceUrl = (cluster_id, namespace) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/api/v1/namespaces/${namespace}/secrets`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/api/v1/namespaces/${namespace}/secrets`
 }
 
 export const SecretsList = (cluster_id, page, pageSize, namespace, keywords, labelSelector) => {

@@ -1,11 +1,11 @@
 import request from "../../plugin/utils/request"
 
 const BaseUrl = (cluster_id) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/api/v1/configmaps`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/api/v1/configmaps`
 }
 
 const BaseNamespaceUrl = (cluster_id, namespace) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/api/v1/namespaces/${namespace}/configmaps`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/api/v1/namespaces/${namespace}/configmaps`
 }
 
 export const ConfigmapsList = (cluster_id, page, pageSize, namespace, keywords, labelSelector) => {

@@ -1,11 +1,11 @@
 import request from "../../../plugin/utils/request"
 
 const BaseUrl = (cluster_id) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/apis/batch/v1/jobs`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/apis/batch/v1/jobs`
 }
 
 const BaseNamespaceUrl = (cluster_id, namespace) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/apis/batch/v1/namespaces/${namespace}/jobs`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/apis/batch/v1/namespaces/${namespace}/jobs`
 }
 
 

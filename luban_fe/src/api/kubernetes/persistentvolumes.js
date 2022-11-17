@@ -1,11 +1,11 @@
 import request from "../../plugin/utils/request"
 
 const BaseUrl = (cluster_id) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/api/v1/persistentvolumes`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/api/v1/persistentvolumes`
 }
 
 const BaseNamespaceUrl = (cluster_id, namespace) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/api/v1/persistentvolumes`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/api/v1/persistentvolumes`
 }
 
 export const PersistentVolumesList = (cluster_id, page, pageSize, namespace, keywords, labelSelector) => {

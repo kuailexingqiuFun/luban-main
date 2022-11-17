@@ -1,7 +1,7 @@
 import request from "../plugin/utils/request"
 
 const listPodsUrl = (clusterName, namespace) => {
-    return `http://localhost:19999/api/v1/kubernetes/${clusterName}/${namespace}/pods`
+    return `/api/v1/kubernetes/${clusterName}/${namespace}/pods`
 }
 
 export function ListPods(clusterName, namespace, params) {

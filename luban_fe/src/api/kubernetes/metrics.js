@@ -1,7 +1,7 @@
 import request from "../../plugin/utils/request"
 
 const BaseUrl = (cluster_id) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}`
+  return `/api/v1/kubernetes/proxy/${cluster_id}`
 }
 
 export const NodeMetricsList = (cluster_id, data) => {

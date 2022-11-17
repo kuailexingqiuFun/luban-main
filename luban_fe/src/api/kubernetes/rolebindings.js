@@ -2,11 +2,11 @@ import request from "../../plugin/utils/request"
 
 
 const BaseUrl = (cluster_id) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/apis/rbac.authorization.k8s.io/v1/rolebindings`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/apis/rbac.authorization.k8s.io/v1/rolebindings`
 }
 
 const BaseNamespaceUrl = (cluster_id, namespace) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/apis/rbac.authorization.k8s.io/v1/namespaces/${namespace}/rolebindings`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/apis/rbac.authorization.k8s.io/v1/namespaces/${namespace}/rolebindings`
 }
 
 export const RoleBindingsList = (cluster_id, page, pageSize, namespace, keywords, labelSelector) => {

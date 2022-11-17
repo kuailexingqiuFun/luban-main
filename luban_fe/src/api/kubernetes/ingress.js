@@ -1,11 +1,11 @@
 import request from "../../plugin/utils/request"
 
 const BaseUrl = (cluster_id) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/apis/networking.k8s.io/v1/ingresses`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/apis/networking.k8s.io/v1/ingresses`
 }
 
 const BaseNamespaceUrl = (cluster_id, namespace) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/apis/networking.k8s.io/v1/namespaces/${namespace}/ingresses`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/apis/networking.k8s.io/v1/namespaces/${namespace}/ingresses`
 }
 
 export const IngressesList = (cluster_id, page, pageSize, namespace, keywords) => {

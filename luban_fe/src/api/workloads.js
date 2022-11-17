@@ -1,7 +1,7 @@
 import request from "../plugin/utils/request"
 
 const BaseUrl = () => {
-    return `http://localhost:19999/api/v1/kubernetes/proxy/`
+    return `/api/v1/kubernetes/proxy/`
 }
 // const apiV1Url = (cluster_id, type) => {
 //     return `/k8s/proxy/${cluster_id}/api/v1/${type}`

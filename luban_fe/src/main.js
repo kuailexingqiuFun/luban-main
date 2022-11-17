@@ -9,6 +9,7 @@ import '@/assets/iconfont/iconfont.css'
 
 Vue.config.productionTip = false
 Vue.prototype.axios = axios;
+
 Vue.use(ElementUI)
 
 new Vue({

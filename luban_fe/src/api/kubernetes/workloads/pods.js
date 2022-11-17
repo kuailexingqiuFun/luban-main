@@ -1,15 +1,15 @@
 import request from "../../../plugin/utils/request"
 
 const BaseUrl = (cluster_id) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/api/v1/pods`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/api/v1/pods`
 }
 
 const BaseNamespaceUrl = (cluster_id, namespace) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/api/v1/namespaces/${namespace}/pods`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/api/v1/namespaces/${namespace}/pods`
 }
 
 const EvictionUrl = (cluster_id, namespace, name) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/api/v1/namespaces/${namespace}/pods/${name}/eviction`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/api/v1/namespaces/${namespace}/pods/${name}/eviction`
 }
 
 export const PodsList = (cluster_id, page, pageSize, namespace, keywords, labelSelector, fieldSelector) => {

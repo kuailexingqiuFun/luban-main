@@ -1,11 +1,11 @@
 import request from "../../plugin/utils/request"
 
 const BaseUrl = (cluster_id) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/apis/storage.k8s.io/v1/storageclasses`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/apis/storage.k8s.io/v1/storageclasses`
 }
 
 const BaseNamespaceUrl = (cluster_id) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/apis/storage.k8s.io/v1/storageclasses`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/apis/storage.k8s.io/v1/storageclasses`
 }
 
 export const StorageClassList = (cluster_id, page, pageSize, namespace, keywords, labelSelector) => {

@@ -1,11 +1,11 @@
 import request from "../../plugin/utils/request"
 
 const BaseUrl = (cluster_id) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/api/v1/serviceaccounts`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/api/v1/serviceaccounts`
 }
 
 const BaseNamespaceUrl = (cluster_id, namespace) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/api/v1/namespaces/${namespace}/serviceaccounts`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/api/v1/namespaces/${namespace}/serviceaccounts`
 }
 
 export const ServiceAccountsList = (cluster_id, page, pageSize, namespace, keywords, labelSelector) => {

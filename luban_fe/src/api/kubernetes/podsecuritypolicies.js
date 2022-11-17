@@ -1,11 +1,11 @@
 import request from "../../plugin/utils/request"
 
 const BaseUrl = (cluster_id) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/apis/policy/v1beta1/podsecuritypolicies`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/apis/policy/v1beta1/podsecuritypolicies`
 }
 
 const BaseNamespaceUrl = (cluster_id, namespace) => {
-  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/apis/policy/v1beta1/podsecuritypolicies`
+  return `/api/v1/kubernetes/proxy/${cluster_id}/apis/policy/v1beta1/podsecuritypolicies`
 }
 
 export const PodSecurityPoliciesList = (cluster_id, page, pageSize, namespace, keywords, labelSelector) => {
