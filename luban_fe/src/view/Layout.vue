@@ -43,6 +43,10 @@
                 <el-menu-item-group>
                   <el-menu-item index="/kubernetes/cluster">集群管理</el-menu-item>
                   <el-menu-item index="/kubernetes/workloads">工作负载</el-menu-item>
+                  <el-menu-item index="/kubernetes/network">服务发现</el-menu-item>
+                  <el-menu-item index="/kubernetes/configs">配置</el-menu-item>
+                  <el-menu-item index="/kubernetes/storages">存储</el-menu-item>
+                  <el-menu-item index="/kubernetes/accessControls">访问控制</el-menu-item>
                 </el-menu-item-group>
               </el-submenu>
 

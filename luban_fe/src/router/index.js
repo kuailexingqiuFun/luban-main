@@ -31,7 +31,32 @@ const routes = [
             {
                 path: '/kubernetes/workloads',
                 name: '工作负载',
-                component: () => import('@/view/workloads/indev.vue')
+                component: () => import('@/view/workloads/index.vue')
+            },
+            {
+                path: '/kubernetes/network',
+                name: '服务发现',
+                component: () => import('@/view/network/index.vue')
+            },
+            {
+                path: '/kubernetes/configs',
+                name: '配置',
+                component: () => import('@/view/configs/index.vue')
+            },
+            {
+                path: '/kubernetes/configs',
+                name: '配置',
+                component: () => import('@/view/configs/index.vue')
+            },
+            {
+                path: '/kubernetes/storages',
+                name: '存储',
+                component: () => import('@/view/storages/index.vue')
+            },
+            {
+                path: '/kubernetes/accessControls',
+                name: '访问控制',
+                component: () => import('@/view/accessControls/index.vue')
             },
             {
                 path: 'test',
