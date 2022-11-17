@@ -24,7 +24,7 @@
         </div>
       </el-header>
       <el-container>
-        <el-aside style="background-color: #f5f5f5">
+        <el-aside style="background-color: #f5f5f5;height: calc(100vh - 70px);">
           <el-col style="height: 100%">
             <el-menu
                 active-text-color="#ffd04b"
@@ -93,7 +93,7 @@ export default {
   width: 100%;
   font-weight: 400;
   font-style: normal;
-   position: fixed;
+  /*position: fixed;*/
   z-index: 999;
   top: 0;
   left: 0;
@@ -122,6 +122,7 @@ export default {
 
 .el-main {
   background: #e4ebf1;
+  height: calc(100vh - 70px);
 }
 
 .el-menu-class {
