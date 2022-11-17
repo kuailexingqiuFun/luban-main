@@ -113,7 +113,7 @@
 </template>
 
 <script>
-import { DeploymentsGet, DeploymentsList, DeploymentsUpdate, DeploymentsCreate, DeploymentsDelete} from '@/api/kubernetes/workloads/deployments'
+import { JobsGet, JobsList, JobsUpdate, JobsCreate, JobsDelete} from '@/api/kubernetes/workloads/jobs'
 import { getClusterList } from '@/api/kubernetes/clusters'
 import { NamespaceList } from '@/api/kubernetes/namespaces'
 import {getK8sObject} from "@/utils/k8s"
@@ -121,7 +121,7 @@ import YamlFormBlock from '@/components/yaml/YamlBlock.vue'
 import ListBlock from './table.vue'
 import DetailBlock from './detail.vue'
 export default {
-  name: 'Deployment',
+  name: 'Jobs',
   components: {
     ListBlock,
     YamlFormBlock,
@@ -156,7 +156,7 @@ export default {
   },
   methods: {
     async getTableData(page = this.page, pageSize = this.pageSize, cluster_id = this.cluster_id, namespace = this.namespace, searchInfo = this.searchInfo.name) {
-      const res = await DeploymentsList(cluster_id, page, pageSize, namespace, searchInfo)
+      const res = await JobsList(cluster_id, page, pageSize, namespace, searchInfo)
       if (res.code === 0) {
         this.tableData = res.data.items
         this.total = res.data.total
@@ -242,12 +242,12 @@ export default {
     },
     // 添加
     async handleYAMLAdd(){
-      this.currentValue =  getK8sObject("deployments", this.namespace, "")
+      this.currentValue =  getK8sObject("jobs", this.namespace, "")
       this.title = "创建"
       this.dialogAddYamlVisible = true
     },
     async handleSubmitAdd(value){
-      const res = await  DeploymentsCreate(this.cluster_id, value.metadata.namespace, value)
+      const res = await  JobsCreate(this.cluster_id, value.metadata.namespace, value)
       if (res.code) {
         this.$message({
           type: 'error',
@@ -265,7 +265,7 @@ export default {
       }
     },
     async handleEditYAML(value) {
-      const res = await DeploymentsGet(this.cluster_id, value.metadata.namespace, value.metadata.name)
+      const res = await JobsGet(this.cluster_id, value.metadata.namespace, value.metadata.name)
       if (res.code === 0) {
         this.currentValue = res.data.items
       }
@@ -278,7 +278,7 @@ export default {
     },
     async handleSubmit(value) {
       this.dialogYamlVisible = false
-      const res = await DeploymentsUpdate(this.cluster_id, value.metadata.namespace, value.metadata.name, value)
+      const res = await JobsUpdate(this.cluster_id, value.metadata.namespace, value.metadata.name, value)
       if (res.code !== 0) {
         this.$message({
           type: 'error',
@@ -301,7 +301,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        const res = await  DeploymentsDelete(this.cluster_id, value.metadata.namespace, value.metadata.name, value)
+        const res = await  JobsDelete(this.cluster_id, value.metadata.namespace, value.metadata.name, value)
         if (res.code === 0) {
           this.$message({
             type: 'success',
@@ -322,7 +322,7 @@ export default {
     },
     async handleDetail(value) {
       this.title = value.metadata.name
-      const res = await DeploymentsGet(this.cluster_id, value.metadata.namespace, value.metadata.name)
+      const res = await JobsGet(this.cluster_id, value.metadata.namespace, value.metadata.name)
       if(res.code === 0){
         this.currentValue = res.data.items
         this.dialogDetailVisible = true

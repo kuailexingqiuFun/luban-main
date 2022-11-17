@@ -5,7 +5,7 @@ const BaseUrl = (cluster_id) => {
 }
 
 const BaseNamespaceUrl = (cluster_id, namespace) => {
-  return `/kubernetes/proxy/${cluster_id}/apis/batch/v1/namespaces/${namespace}/jobs`
+  return `http://localhost:19999/api/v1/kubernetes/proxy/${cluster_id}/apis/batch/v1/namespaces/${namespace}/jobs`
 }
 
 
