@@ -1,55 +1,106 @@
 <template>
   <div>
     <el-table
-      :data="value"
-      stripe
-      style="width: 100%"
-    >
+        :data="value"
+        :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+        border
+        row-key="ID"
+        stripe
+        size="mini"
+        style="width: 100%">
       <el-table-column
-        label="名称"
-        prop="name"
-        type="scope"
-      >
-        <template slot-scope="scope">
-          <span class="operate-span" @click="handleDetail(scope.row)">{{ scope.row.metadata.name }} </span>
+          label="名称"
+          prop="name"
+          width="278px"
+          type="scope">
+        <template slot-scope="scope" >
+          <span class="operate-span"  @click="handleDetail(scope.row)">{{ scope.row.metadata.name }} </span>
         </template>
       </el-table-column>
       <el-table-column
-        label="命名空间"
-        prop="namespace"
-        type="scope"
-      >
+          label="命名空间"
+          prop="namespace"
+          width="178px"
+          type="scope">
         <template slot-scope="scope">
-          <span>{{ scope.row.metadata.namespace }}</span>
+          {{ scope.row.metadata.namespace }}
         </template>
       </el-table-column>
       <el-table-column
-        label="容器组数量"
-        prop="status"
-        type="scope"
-      >
+          label="标签"
+          prop="labels"
+          width="300px"
+          type="scope">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.status.readyReplicas / scope.row.status.replicas === 1" type="success"> {{ scope.row.status.readyReplicas || 0 }} / {{ scope.row.status.replicas }}</el-tag>
-          <el-tag v-else type="danger"> {{ scope.row.status.readyReplicas || 0 }} / {{ scope.row.status.replicas }}</el-tag>
+              <span v-for="(k, v, index) in scope.row.metadata.labels" :key="index">
+                <span class="label-custom wd" type="info">{{ k }}: {{ v }}</span>
+              </span>
         </template>
       </el-table-column>
       <el-table-column
-        label="存活时间"
-        prop="creationTimestamp"
-        type="scope"
-      >
+          label="类型"
+          prop="type"
+          width="178px"
+          type="scope">
         <template slot-scope="scope">
-          <span>{{ scope.row.metadata.creationTimestamp |formatDate }}</span>
+          {{ scope.row.spec.type }}
         </template>
       </el-table-column>
       <el-table-column
-        fixed="right"
-        label="操作"
-        width="200"
-      >
+          label="创建时间"
+          prop="creationTimestamp"
+          width="178px"
+          type="scope">
+        <template slot-scope="scope" >
+          <span>{{scope.row.metadata.creationTimestamp |formatDate }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+          label="IP"
+          prop="clusterIP"
+          width="178px"
+          type="scope">
+        <template slot-scope="scope" >
+          <span>{{scope.row.spec.clusterIP }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+          label="内部端点"
+          prop="endpoint"
+          width="300px"
+          type="scope">
+        <template slot-scope="scope" >
+          <div v-if="scope.row.spec.ports">
+            <div :key="item.index" v-for="item in scope.row.spec.ports">
+              <span v-if="item.port">{{ scope.row.metadata.name }}: {{ item.port}} {{ item.protocol}} </span><br/>
+              <span v-if="item.nodePort">{{ scope.row.metadata.name }}: {{ item.nodePort}}  {{ item.protocol}}</span> <br/>
+            </div>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column
+          label="外部端点"
+          prop="endpoint"
+          width="300px"
+          type="scope">
+        <template slot-scope="scope" >
+          <div v-if="scope.row.status.loadBalancer.ingress">
+            <div :key="ingress.index" v-for="ingress in scope.row.status.loadBalancer.ingress">
+              <div :key="item.index" v-for="item in scope.row.spec.ports">
+                <span v-if="item.port">{{ ingress.ip }}: {{ item.port}} </span><br/>
+              </div>
+            </div>
+          </div>
+          <div v-else>-</div>
+        </template>
+      </el-table-column>
+      <el-table-column
+          fixed="right"
+          label="操作"
+          width="385">
         <template slot-scope="scope">
-          <el-button size="small" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button @click="handleEdit(scope.row)" size="small" type="primary">编辑</el-button>
+          <el-button @click="handleDelete(scope.row)" size="small" type="danger">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
