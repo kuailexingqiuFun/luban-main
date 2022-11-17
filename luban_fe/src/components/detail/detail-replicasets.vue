@@ -32,9 +32,9 @@
 
 <script>
 import TableOperations from "@/components/table-operations"
-// import { listNsReplicaSetsWorkload } from "@/api/k8s/replicasets"
-// import { patchDeployment } from "@/api/k8s/deployment"
+import { ReplicaSetsList } from "@/api/kubernetes/replicasets"
 import YamlEditor from "@/components/yaml/YamlBlock.vue"
+import {DeploymentsPatch} from "@/api/kubernetes/workloads/deployments";
 
 export default {
   name: "DetailReplicasets",
@@ -69,6 +69,7 @@ export default {
       buttons: [
         {
           label: "回滚到该版本",
+          size: "mini",
           icon: "el-icon-refresh-left",
           click: (row) => {
             this.OptionRollback(row)
@@ -79,6 +80,7 @@ export default {
         },
         {
           label: "具体信息",
+          size: "mini",
           icon: "el-icon-tickets",
           click: (row) => {
             this.SpecificInformation(row)
@@ -95,13 +97,13 @@ export default {
   methods: {
     search() {
       this.loading = true
-      // listNsReplicaSetsWorkload(this.cluster_id, this.namespace, this.selector, this.fieldSelector).then((res) => {
-      //   this.loading = false
-      //   res.data.items.sort((a, b) => b.metadata.annotations["deployment.kubernetes.io/revision"] - a.metadata.annotations["deployment.kubernetes.io/revision"])
-      //   for (var i = 0; i < res.data.items.length; i++) {
-      //     this.pods.push(res.data.items[i])
-      //   }
-      // })
+      ReplicaSetsList(this.cluster_id, this.namespace, this.selector, this.fieldSelector).then((res) => {
+        this.loading = false
+        res.data.items.sort((a, b) => b.metadata.annotations["deployment.kubernetes.io/revision"] - a.metadata.annotations["deployment.kubernetes.io/revision"])
+        for (var i = 0; i < res.data.items.length; i++) {
+          this.pods.push(res.data.items[i])
+        }
+      })
     },
     OptionRollback(row) {
       this.$confirm("回滚到该版本", "提示", {
@@ -109,18 +111,18 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        // patchDeployment(this.cluster_id, row.metadata.namespace, this.name, { spec: { template: row.spec.template } })
-        //   .then(() => {
-        //     this.dialogModifyVersionVisible = false
-        //     this.loading = true
-        //     this.$message({
-        //       type: "success",
-        //       message: "操作成功",
-        //     })
-        //   })
-        //   .finally(() => {
-        //     this.loading = false
-        //   })
+        DeploymentsPatch(this.cluster_id, row.metadata.namespace, this.name, { spec: { template: row.spec.template } })
+          .then(() => {
+            this.dialogModifyVersionVisible = false
+            this.loading = true
+            this.$message({
+              type: "success",
+              message: "操作成功",
+            })
+          })
+          .finally(() => {
+            this.loading = false
+          })
       })
     },
     SpecificInformation(row) {

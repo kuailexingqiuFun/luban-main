@@ -68,6 +68,8 @@ export default function (method, url, data = null) {
         return instance.delete(url, { params: data })
     } else if (method === 'put') {
         return instance.put(url, data)
+    }else if (method === 'patch') {
+        return instance.patch(url, data)
     } else {
         console.error("未知的方法:" + method)
         return false
