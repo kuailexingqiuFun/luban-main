@@ -11,6 +11,11 @@ export default {
   name: 'App',
   components: {
   },
+  provide() {
+    return {
+      reload: this.reload
+    }
+  },
   methods: {
     // 定义刷新页面方法
     reload(){

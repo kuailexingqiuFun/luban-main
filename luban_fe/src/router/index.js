@@ -59,6 +59,11 @@ const routes = [
                 component: () => import('@/view/accessControls/index.vue')
             },
             {
+                path: '/user/manage',
+                name: '用户管理',
+                component: () => import('@/view/user/UserManage.vue')
+            },
+            {
                 path: 'test',
                 name: 'Test',
                 component: () => import('@/view/Test.vue')
