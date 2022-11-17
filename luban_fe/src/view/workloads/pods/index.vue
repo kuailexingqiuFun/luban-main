@@ -234,7 +234,7 @@ export default {
       }
     },
     handleCurrentChange(val) {
-      this.pageSize = val
+      this.page = val
       this.getTableData()
     },
     handleSizeChange(val) {
