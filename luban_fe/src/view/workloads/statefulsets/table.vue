@@ -24,13 +24,12 @@
         </template>
       </el-table-column>
       <el-table-column
-        label="容器组数量"
-        prop="status"
-        type="scope"
-      >
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.status.readyReplicas / scope.row.status.replicas === 1" type="success"> {{ scope.row.status.readyReplicas || 0 }} / {{ scope.row.status.replicas }}</el-tag>
-          <el-tag v-else type="danger"> {{ scope.row.status.readyReplicas || 0 }} / {{ scope.row.status.replicas }}</el-tag>
+          label="容器组数量"
+          prop="status"
+          type="scope">
+        <template slot-scope="scope" >
+          <el-tag type="success" v-if="scope.row.status.readyReplicas / scope.row.status.replicas === 1"> {{ scope.row.status.readyReplicas || 0 }} / {{ scope.row.status.replicas }}</el-tag>
+          <el-tag type="danger" v-else> {{ scope.row.status.readyReplicas || 0 }} / {{ scope.row.status.replicas }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column
