@@ -12,12 +12,12 @@ export const IngressesList = (cluster_id, page, pageSize, namespace, keywords, l
   if (namespace && namespace !== 'All Namespaces') {
     return request(
         'get',
-     `${BaseNamespaceUrl(cluster_id, namespace)}?search=true&keywords=${keywords}&page=${page}&pageSize=${pageSize}&labelSelector=${labelSelector}&fieldSelector=${fieldSelector}`,
-        )
+        `${BaseNamespaceUrl(cluster_id, namespace)}?search=true&keywords=${keywords}&page=${page}&pageSize=${pageSize}`,
+    )
   }
-  return BaseUrl(
-    'get',
-    `${BaseUrl(cluster_id)}?search=true&keywords=${keywords}&page=${page}&pageSize=${pageSize}&labelSelector=${labelSelector}&fieldSelector=${fieldSelector}`,
+  return request(
+      'get',
+      `${BaseUrl(cluster_id)}?search=true&keywords=${keywords}&page=${page}&pageSize=${pageSize}`,
   )
 }
 
