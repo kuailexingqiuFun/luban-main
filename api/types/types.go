@@ -104,6 +104,7 @@ type UserRequest struct {
 }
 
 type ClusterRequest struct {
+	Id          int64  `json:"id"`
 	ClusterName string `json:"clusterName"`
 	KubeConfig  string `json:"kubeConfig"`
 	ApiAddress  string `json:"apiAddress"`

@@ -11,6 +11,7 @@ func KubernetesRouter(r *gin.RouterGroup) {
 	{
 		k8sRouter.POST("cluster", k8s.CreateCluster)
 		k8sRouter.GET("clusters", k8s.ListCluster)
+		k8sRouter.GET("clusters/:id", k8s.GetClusterDetail)
 		k8sRouter.DELETE("cluster", k8s.DeleteCluster)
 		k8sRouter.PUT("cluster", k8s.UpdateCluster)
 
