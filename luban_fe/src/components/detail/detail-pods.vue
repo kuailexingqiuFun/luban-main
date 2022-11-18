@@ -132,7 +132,7 @@ export default {
       dialogVisibleContainerlog: false,
       Title: "",
       currenturl: "",
-      path: "ws://localhost:19999",
+      path:  process.env.VUE_APP_WS_URL,
       terminal: {
         pid: 1,
         name: 'terminal',

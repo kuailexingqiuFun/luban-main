@@ -169,7 +169,7 @@ export default {
       pageSize: 10,
       page: 1,
       total: 0,
-      path: "ws://localhost:19999",
+      path:  process.env.VUE_APP_WS_URL,
       currentValuedetailurl: '',
       searchInfo: {
         'name': ''
