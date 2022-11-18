@@ -123,3 +123,66 @@ func getContainerImages(node v1.Node) []string {
 	}
 	return containerImages
 }
+
+// NodeUnschedule 对节点设置不可调度
+func NodeUnschedule(c *gin.Context) {
+	var (
+		node        types.BatchNode
+		nameOptions types.NameOptions
+	)
+	if err := c.ShouldBindJSON(&node); err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"data": "",
+			"msg":  err.Error(),
+		})
+		return
+	}
+
+	if err := c.ShouldBindUri(&nameOptions); err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"data": "",
+			"msg":  err.Error(),
+		})
+		return
+	}
+
+	if len(node.Name) <= 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"data": "",
+			"msg":  "请选择节点后在进行操作",
+		})
+		return
+	}
+	// 3. 通过kube config生成clientSet
+	clientSet, err := NewClientSet(nameOptions.Cluster)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"code": -1, "msg": err.Error(), "data": ""})
+		return
+	}
+
+	for _, v := range node.Name {
+		node, err := clientSet.CoreV1().Nodes().Get(context.TODO(), v, metaV1.GetOptions{})
+		if err != nil {
+
+		}
+		node.Spec.Unschedulable = true
+		_, err = clientSet.CoreV1().Nodes().Update(context.TODO(), node, metaV1.UpdateOptions{})
+		if err != nil {
+
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": 0,
+		"data": "",
+		"msg":  "已将节点设置不可调度",
+	})
+
+}
+
+func NodeCordon(c *gin.Context) {
+
+}
