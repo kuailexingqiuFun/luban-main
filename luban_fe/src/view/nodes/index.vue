@@ -230,7 +230,7 @@ export default {
       }
     },
     async handleEditYAML(value) {
-      const res = await NodesGet(this.cluster_id, value.metadata.namespace, value.metadata.name)
+      const res = await NodesGet(this.cluster_id, value.metadata.name)
       if (res.code === 0) {
         this.currentValue = res.data.items
       }
@@ -243,7 +243,7 @@ export default {
     },
     async handleSubmit(value) {
       this.dialogYamlVisible = false
-      const res = await NodesUpdate(this.cluster_id, value.metadata.namespace, value.metadata.name, value)
+      const res = await NodesUpdate(this.cluster_id, value.metadata.name, value)
       if (res.code !== 0) {
         this.$message({
           type: 'error',
@@ -266,7 +266,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(async () => {
-        const res = await  NodesDelete(this.cluster_id, value.metadata.namespace, value.metadata.name, value)
+        const res = await  NodesDelete(this.cluster_id, value.metadata.name, value)
         if (res.code === 0) {
           this.$message({
             type: 'success',
@@ -287,7 +287,7 @@ export default {
     },
     async handleDetail(value) {
       this.title = value.metadata.name
-      const res = await NodesGet(this.cluster_id, value.metadata.namespace, value.metadata.name)
+      const res = await NodesGet(this.cluster_id, value.metadata.name)
       if(res.code === 0){
         this.currentValue = res.data.items
         this.dialogDetailVisible = true

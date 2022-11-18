@@ -78,7 +78,7 @@
         <template #default="scope">
           <el-form :inline="true" class="demo-form-inline">
             <el-form-item>
-              <el-button size="small" type="primary" link icon="edit" @click="handleUpdate(scope.row)">编辑</el-button>
+              <el-button size="small" type="primary" link icon="edit" @click="handleEdit(scope.row)">编辑</el-button>
             </el-form-item>
             <el-form-item>
               <el-popover v-model="scope.row.visible" placement="top">
