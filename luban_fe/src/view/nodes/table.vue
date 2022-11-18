@@ -81,29 +81,10 @@
               <el-button size="small" type="primary" link icon="edit" @click="handleEdit(scope.row)">编辑</el-button>
             </el-form-item>
             <el-form-item>
-              <el-popover v-model="scope.row.visible" placement="top">
-                <p>确定要删除吗？</p>
-                <div style="text-align: right; margin-top: 8px;">
-                  <el-button size="small" type="primary" link @click="scope.row.visible = false">取消</el-button>
-                  <el-button type="primary" size="small" @click="handleDelete(scope.row)">确定</el-button>
-                </div>
-                <template #reference>
-                  <el-button type="primary" link icon="delete" size="small" @click="scope.row.visible = true">删除</el-button>
-                </template>
-              </el-popover>
+              <el-button type="primary" link  size="small" @click="handleDetail">详情</el-button>
             </el-form-item>
             <el-form-item>
-              <el-dropdown>
-                <el-button type="primary" link icon="MoreFilled" size="small">更多</el-button>
-                <template #dropdown>
-                  <el-dropdown-menu>
-                    <el-dropdown-item @click.native="handleDetail(scope.row)">详情</el-dropdown-item>
-<!--                    <el-dropdown-item @click.native="handleYAML(scope.row)">YAML</el-dropdown-item>-->
-<!--                    <el-dropdown-item @click.native="handleDrain(scope.row)">节点排空</el-dropdown-item>-->
-<!--                    <el-dropdown-item @click.native="handleSchedule(scope.row)">调度设置</el-dropdown-item>-->
-                  </el-dropdown-menu>
-                </template>
-              </el-dropdown>
+              <el-button type="danger" link icon="delete" size="small" @click="scope.row.visible = true">删除</el-button>
             </el-form-item>
           </el-form>
         </template>
