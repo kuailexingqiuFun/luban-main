@@ -6,6 +6,10 @@ const listNodesUrl = (clusterName) => {
 
 export function ListNodes(clusterName, params) {
     let url = listNodesUrl(clusterName, params)
-
     return request("get", url, params)
+}
+
+export function GetNodeDetail(clusterName, nodeName) {
+    let url = listNodesUrl(clusterName) + "/" + nodeName
+    return request("get", url)
 }

@@ -108,3 +108,7 @@ type ClusterRequest struct {
 	KubeConfig  string `json:"kubeConfig"`
 	ApiAddress  string `json:"apiAddress"`
 }
+
+type BatchNode struct {
+	Name []string `json:"name"`
+}
