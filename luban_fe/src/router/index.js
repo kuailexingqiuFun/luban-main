@@ -26,7 +26,7 @@ const routes = [
             {
                 path: '/kubernetes/nodes',
                 name: 'Nodes',
-                component: () => import('@/view/k8s/Nodes.vue')
+                component: () => import('@/view/nodes/index.vue')
             },
             {
                 path: '/kubernetes/workloads',
