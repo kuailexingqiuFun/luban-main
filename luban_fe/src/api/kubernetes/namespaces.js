@@ -11,25 +11,29 @@ export const NamespaceList = (cluster_id, page, pageSize, keywords) => {
       )
 }
 
+export const NamespaceGet = (cluster_id, name) => {
+  return  request(
+      "get",
+      `${BaseUrl(cluster_id)}/${name}`,
+  )
+}
 export const NamespaceCreate = (cluster_id, data) => {
-  return request({
-    url: `${BaseUrl(cluster_id)}`,
-    method: 'post',
-    data
-  })
+  return request(
+      'post',
+      `${BaseUrl(cluster_id)}`,
+      data)
 }
 
 export const NamespaceUpdate = (cluster_id, name, data) => {
-  return request({
-    url: `${BaseUrl(cluster_id)}/${name}`,
-    method: 'put',
-    data
-  })
+  return request(
+      'put',
+      `${BaseUrl(cluster_id)}/${name}`,
+      data)
 }
 
 export const NamespaceDelete = (cluster_id, name) => {
-  return request({
-    url: `${BaseUrl(cluster_id)}/${name}`,
-    method: 'delete'
-  })
+  return request(
+      'delete',
+      `${BaseUrl(cluster_id)}/${name}`
+)
 }

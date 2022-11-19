@@ -25,18 +25,18 @@ type Item struct {
 type K8sObj interface{}
 
 type ProxyParamRequest struct {
-	ClusterId int    `uri:"cluster_id" binding:"required"`
-	Path      string `uri:"path" binding:"required"`
+	ClusterId int    `uri:"cluster_id" binding:"required"` // 集群id
+	Path      string `uri:"path" binding:"required"`       // 请求路径
 }
 
 type ProxyRequest struct {
-	Search        string `form:"search" binding:"required"`
-	Namespace     string `form:"namespace" binding:"required"`
-	Keywords      string `form:"keywords" binding:"required"`
-	FieldSelector string `form:"fieldSelector" binding:"required"`
-	LabelSelector string `form:"labelSelector" binding:"required"`
-	Page          int    `form:"page" binding:"required"`
-	PageSize      int    `form:"pageSize" binding:"required"`
+	Search        string `form:"search" binding:"required"`        // 是否分页
+	Namespace     string `form:"namespace" binding:"required"`     // 命名空间
+	Keywords      string `form:"keywords" binding:"required"`      // 关键字搜索
+	FieldSelector string `form:"fieldSelector" binding:"required"` // 字段搜索
+	LabelSelector string `form:"labelSelector" binding:"required"` // 标签过滤
+	Page          int    `form:"page" binding:"required"`          // 页码
+	PageSize      int    `form:"pageSize" binding:"required"`      // 每页数据条目数
 }
 
 type TerminalRequest struct {
@@ -144,6 +144,7 @@ func fetchMultiNamespace(c *gin.Context, proxy ProxyRequest, httpClient http.Cli
 // @Produce application/json
 
 func ProxyOption(c *gin.Context, proxy ProxyRequest, urlParam ProxyParamRequest) (ret Result, err error) {
+	// 查询集群信息
 	var cluster model.K8SCluster
 	if err = options.DB.Model(&model.K8SCluster{}).Where("id = ?", urlParam.ClusterId).First(&cluster).Error; err != nil {
 		return ret, errors.New("select Cluster failed: " + err.Error())
@@ -171,6 +172,7 @@ func ProxyOption(c *gin.Context, proxy ProxyRequest, urlParam ProxyParamRequest)
 	compatibleClusterVersion(clusterVersionMinor, &urlParam.Path)
 
 	//判断是否已经包含了namespace的查询
+	fmt.Println("url 地址", urlParam.Path)
 	resourceName, err := parseResourceName(strings.Split(urlParam.Path, "?")[0])
 	if err != nil {
 		return ret, errors.New("Get  resourceName failed: " + err.Error())

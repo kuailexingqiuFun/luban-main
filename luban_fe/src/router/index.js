@@ -34,6 +34,11 @@ const routes = [
                 component: () => import('@/view/workloads/index.vue')
             },
             {
+                path: '/kubernetes/namespaces',
+                name: '命名空间',
+                component: () => import('@/view/namespaces/index.vue')
+            },
+            {
                 path: '/kubernetes/network',
                 name: '服务发现',
                 component: () => import('@/view/network/index.vue')

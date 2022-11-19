@@ -62,8 +62,12 @@ const namespaceObj = {
   kind: "Namespace",
   metadata: {
     name: "test1",
-    annotations: {},
-    labels: {},
+    annotations: {
+      abc: "abc"
+    },
+    labels: {
+      abc: "abc"
+    },
   },
 };
 
