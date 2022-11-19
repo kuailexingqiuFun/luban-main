@@ -6,6 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	v1 "k8s.io/api/core/v1"
+	policy "k8s.io/api/policy/v1beta1"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/fields"
 	"k8s.io/client-go/kubernetes"
@@ -44,7 +45,12 @@ func GetNodeDetail(c *gin.Context) {
 	//  获取node节点上的pod
 	pods, err := getNodePods(clientSet, *node)
 	if err != nil {
-
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"data": "",
+			"msg":  err.Error(),
+		})
+		return
 	}
 
 	// 获取节点详情，状态
@@ -127,8 +133,8 @@ func getContainerImages(node v1.Node) []string {
 // NodeUnschedule 对节点设置不可调度
 func NodeUnschedule(c *gin.Context) {
 	var (
-		node        types.BatchNode
-		nameOptions types.NameOptions
+		node           types.BatchNode
+		clusterOptions types.ClusterOptions
 	)
 	if err := c.ShouldBindJSON(&node); err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -139,7 +145,7 @@ func NodeUnschedule(c *gin.Context) {
 		return
 	}
 
-	if err := c.ShouldBindUri(&nameOptions); err != nil {
+	if err := c.ShouldBindUri(&clusterOptions); err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
 			"data": "",
@@ -157,7 +163,7 @@ func NodeUnschedule(c *gin.Context) {
 		return
 	}
 	// 3. 通过kube config生成clientSet
-	clientSet, err := NewClientSet(nameOptions.Cluster)
+	clientSet, err := NewClientSet(clusterOptions.Cluster)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": -1, "msg": err.Error(), "data": ""})
 		return
@@ -166,12 +172,14 @@ func NodeUnschedule(c *gin.Context) {
 	for _, v := range node.Name {
 		node, err := clientSet.CoreV1().Nodes().Get(context.TODO(), v, metaV1.GetOptions{})
 		if err != nil {
-
+			c.JSON(http.StatusOK, gin.H{"code": -1, "msg": err.Error(), "data": ""})
+			return
 		}
 		node.Spec.Unschedulable = true
 		_, err = clientSet.CoreV1().Nodes().Update(context.TODO(), node, metaV1.UpdateOptions{})
 		if err != nil {
-
+			c.JSON(http.StatusOK, gin.H{"code": -1, "msg": err.Error(), "data": ""})
+			return
 		}
 	}
 
@@ -184,5 +192,90 @@ func NodeUnschedule(c *gin.Context) {
 }
 
 func NodeCordon(c *gin.Context) {
+	var (
+		node           types.BatchNode
+		clusterOptions types.ClusterOptions
+	)
+	if err := c.ShouldBindJSON(&node); err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"data": "",
+			"msg":  err.Error(),
+		})
+		return
+	}
 
+	if err := c.ShouldBindUri(&clusterOptions); err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"data": "",
+			"msg":  err.Error(),
+		})
+		return
+	}
+
+	if len(node.Name) <= 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"data": "",
+			"msg":  "请选择节点后在进行操作",
+		})
+		return
+	}
+	// 3. 通过kube config生成clientSet
+	clientSet, err := NewClientSet(clusterOptions.Cluster)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{"code": -1, "msg": err.Error(), "data": ""})
+		return
+	}
+
+	for _, v := range node.Name {
+		node, err := clientSet.CoreV1().Nodes().Get(context.TODO(), v, metaV1.GetOptions{})
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"code": -1, "msg": err.Error(), "data": ""})
+			return
+		}
+		// 将节点设置不可调度
+		node.Spec.Unschedulable = true
+		_, err = clientSet.CoreV1().Nodes().Update(context.TODO(), node, metaV1.UpdateOptions{})
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"code": -1, "msg": err.Error(), "data": ""})
+			return
+		}
+
+		// 对节点上的pod进行驱逐， 先宽容的时间60
+		var gracePeriodSeconds int64 = 60
+		propagationPolicy := metaV1.DeletePropagationForeground
+		deleteOptions := &metaV1.DeleteOptions{
+			GracePeriodSeconds: &gracePeriodSeconds,
+			PropagationPolicy:  &propagationPolicy,
+		}
+		// 获取节点上所有Pod
+		podList, _ := clientSet.CoreV1().Pods(metaV1.NamespaceAll).List(context.TODO(), metaV1.ListOptions{
+			FieldSelector: "spec.nodeName=" + v,
+		})
+
+		// 循环Pod列表
+		for _, podName := range podList.Items {
+			// 不驱逐kube-system命名空间下的Pod
+			if podName.Namespace == "kube-system" {
+				continue
+			}
+
+			// 调用驱逐接口, kube-system
+			_ = clientSet.PolicyV1beta1().Evictions(metaV1.NamespaceAll).Evict(context.TODO(), &policy.Eviction{
+				ObjectMeta: metaV1.ObjectMeta{
+					Name:      podName.Name,
+					Namespace: metaV1.NamespaceAll,
+				},
+				DeleteOptions: deleteOptions,
+			})
+		}
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": 0,
+		"data": "",
+		"msg":  "已将所有节点排水",
+	})
 }

@@ -240,7 +240,7 @@
 </template>
 
 <script>
-import {GetNodeDetail, ListNodes} from "@/api/k8s";
+import {GetNodeDetail, ListNodes, SetCordon} from "@/api/k8s";
 import {Message} from "element-ui";
 import {getClusterList} from "@/api/kubernetes/clusters";
 
@@ -301,7 +301,16 @@ export default {
     },
     // 节点排水
     setCordon() {
-      console.log(this.multipleSelection, "排水")
+      let nodeName = []
+      for(let i=0; i<this.multipleSelection.length; i++) {
+        nodeName.push(this.multipleSelection[i].name)
+      }
+      SetCordon(localStorage.getItem("clusterName"), {"name":nodeName}).then((res) => {
+        if (res.code === 0) {
+          Message.success("节点排水成功")
+        }
+      })
+
     },
   },
   data() {

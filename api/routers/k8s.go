@@ -17,8 +17,8 @@ func KubernetesRouter(r *gin.RouterGroup) {
 
 		k8sRouter.GET("/:cluster/nodes", k8s.ListNodes)
 		k8sRouter.GET("/:cluster/nodes/:name", k8s.GetNodeDetail)
-		k8sRouter.POST("/:cluster/nodes/:name/schedule", k8s.NodeUnschedule)
-		k8sRouter.POST("/:cluster/nodes/:name/cordon", k8s.NodeCordon)
+		k8sRouter.POST("/:cluster/nodes/schedule", k8s.NodeUnschedule)
+		k8sRouter.POST("/:cluster/nodes/cordon", k8s.NodeCordon)
 
 		// deployment
 		k8sRouter.GET("/:cluster/:namespace/deployments", k8s.ListDeployment)

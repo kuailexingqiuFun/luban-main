@@ -33,6 +33,7 @@ func ListDeployment(c *gin.Context) {
 }
 
 func GetDeploymentDetail(c *gin.Context) {
+	// AppsV1, CoreV1
 	var requestOptions types.RequestOptions
 	if err := c.ShouldBindUri(&requestOptions); err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": -1, "msg": err.Error(), "data": ""})

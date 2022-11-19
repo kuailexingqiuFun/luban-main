@@ -25,3 +25,7 @@ export function EditCluster(clusterId, params) {
 export function GetClusterDetail(clusterId) {
     return request('get', `/api/v1/kubernetes/clusters/${clusterId}`)
 }
+
+export function SetCordon(clusterName, params) {
+    return request('post', `/api/v1/kubernetes/${clusterName}/nodes/cordon`, params)
+}
