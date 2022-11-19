@@ -172,7 +172,6 @@ func ProxyOption(c *gin.Context, proxy ProxyRequest, urlParam ProxyParamRequest)
 	compatibleClusterVersion(clusterVersionMinor, &urlParam.Path)
 
 	//判断是否已经包含了namespace的查询
-	fmt.Println("url 地址", urlParam.Path)
 	resourceName, err := parseResourceName(strings.Split(urlParam.Path, "?")[0])
 	if err != nil {
 		return ret, errors.New("Get  resourceName failed: " + err.Error())

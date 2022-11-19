@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/dnsjia/luban/pkg/model"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
@@ -103,7 +102,6 @@ func (k *Kubernetes) IsNamespacedResource(resourceName string) (bool, error) {
 		return false, err
 	}
 	for i := range apiList {
-		fmt.Println("命名空间级别资源", apiList[i].APIResources)
 		for j := range apiList[i].APIResources {
 			if apiList[i].APIResources[j].Name == resourceName {
 				return true, nil
