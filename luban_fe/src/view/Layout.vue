@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <el-container class="header-container">
       <!--头部-->
       <el-header style="display: flex; background-color: #fff;align-items: stretch; justify-content: space-between;height: 50px;">
@@ -26,6 +27,8 @@
       <el-container>
         <el-aside style="background-color: #f5f5f5;height: calc(100vh - 70px);">
           <el-col style="height: 100%">
+            <!--默认情况下菜单不能填充整个页面，需要使用 calc(100vh - 70px) -->
+            <!--菜单激活状态this.$route.path -->
             <el-menu
                 active-text-color="#ffd04b"
                 background-color="#fff"
@@ -64,9 +67,11 @@
           </el-col>
         </el-aside>
         <el-main>
+          <!--使用router-view加载其他页面-->
           <router-view></router-view>
         </el-main>
       </el-container>
+
     </el-container>
   </div>
 </template>
