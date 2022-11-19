@@ -2,6 +2,7 @@ package k8s
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -193,10 +194,10 @@ func NodeUnschedule(c *gin.Context) {
 
 func NodeCordon(c *gin.Context) {
 	var (
-		node           types.BatchNode
+		nodeRequest    types.BatchNode
 		clusterOptions types.ClusterOptions
 	)
-	if err := c.ShouldBindJSON(&node); err != nil {
+	if err := c.ShouldBindJSON(&nodeRequest); err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
 			"data": "",
@@ -214,7 +215,7 @@ func NodeCordon(c *gin.Context) {
 		return
 	}
 
-	if len(node.Name) <= 0 {
+	if len(nodeRequest.Name) <= 0 {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
 			"data": "",
@@ -229,8 +230,8 @@ func NodeCordon(c *gin.Context) {
 		return
 	}
 
-	for _, v := range node.Name {
-		node, err := clientSet.CoreV1().Nodes().Get(context.TODO(), v, metaV1.GetOptions{})
+	for _, nodeName := range nodeRequest.Name {
+		node, err := clientSet.CoreV1().Nodes().Get(context.TODO(), nodeName, metaV1.GetOptions{})
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{"code": -1, "msg": err.Error(), "data": ""})
 			return
@@ -251,8 +252,8 @@ func NodeCordon(c *gin.Context) {
 			PropagationPolicy:  &propagationPolicy,
 		}
 		// 获取节点上所有Pod
-		podList, _ := clientSet.CoreV1().Pods(metaV1.NamespaceAll).List(context.TODO(), metaV1.ListOptions{
-			FieldSelector: "spec.nodeName=" + v,
+		podList, err := clientSet.CoreV1().Pods(metaV1.NamespaceAll).List(context.TODO(), metaV1.ListOptions{
+			FieldSelector: "spec.nodeName=" + nodeName,
 		})
 
 		// 循环Pod列表
@@ -263,13 +264,17 @@ func NodeCordon(c *gin.Context) {
 			}
 
 			// 调用驱逐接口, kube-system
-			_ = clientSet.PolicyV1beta1().Evictions(metaV1.NamespaceAll).Evict(context.TODO(), &policy.Eviction{
+			err = clientSet.PolicyV1beta1().Evictions(podName.Namespace).Evict(context.TODO(), &policy.Eviction{
 				ObjectMeta: metaV1.ObjectMeta{
 					Name:      podName.Name,
-					Namespace: metaV1.NamespaceAll,
+					Namespace: podName.Namespace,
 				},
 				DeleteOptions: deleteOptions,
 			})
+
+			if err != nil {
+				fmt.Println(err, "==xxxx")
+			}
 		}
 	}
 
