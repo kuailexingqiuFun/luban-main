@@ -2,7 +2,7 @@
   <div>
     <el-card>
       <div>
-        <el-button type="primary" size="medium" @click="addClusterVisible=true">注册集群</el-button>
+        <el-button type="primary" size="medium" @click="RegisterCluster">注册集群</el-button>
         <el-table
             :data="clusterData"
             style="width: 100%">
@@ -31,13 +31,22 @@
               sortable
           >
           </el-table-column>
+          <el-table-column
+              fixed="right"
+              label="操作"
+              width="200"
+          >
+            <template v-slot="scope">
+              <el-button size="small"  @click="editCluster(scope.row.id)">编辑</el-button>
+              <el-button type="danger" size="mini" @click="deleteCluster(scope.row.id)">删除</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
 
     </el-card>
     <div>
-      <el-dialog title="添加集群" :visible.sync="addClusterVisible" width="600px" :modal="false" :destroy-on-close="true"
-      >
+      <el-dialog title="添加集群" :visible.sync="addClusterVisible" width="600px" :modal="false" :destroy-on-close="true">
         <el-form :model="clusterForm" label-width="100px" :rules="clusterRules" ref="clusterForm">
           <el-form-item label="集群名称" prop="clusterName">
             <el-input v-model="clusterForm.clusterName" autocomplete="off" placeholder="请输入集群名称"></el-input>
@@ -66,23 +75,38 @@
 <script>
 import {createCluster, getClusterList} from "@/api/kubernetes/clusters";
 import {Message} from "element-ui";
+import {DeleteCluster, GetClusterDetail} from "@/api/k8s";
 
 export default {
   name: "ClusterManage.vue",
+  inject: ['reload'],
+  created() {
+    this.GetCluster()
+  },
+  mounted() {
+    console.log(this.$route.path)
+  },
   methods: {
     GetCluster() {
       getClusterList().then((res) => {
         this.clusterData = res.data
       })
     },
+    RegisterCluster() {
+      this.addClusterVisible = true
+      this.clusterForm.clusterName = ''
+      this.clusterForm.kubeConfig = ''
+      this.clusterForm.apiAddress = ''
+    },
     AddCluster(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log(valid)
+          console.log(this.clusterForm, "===")
           createCluster(this.clusterForm).then((res) => {
             if (res.code ===0) {
               Message.success("集群注册成功")
               this.addClusterVisible = false
+              this.reload()
             } else {
               Message.error(res.msg)
             }
@@ -91,14 +115,30 @@ export default {
           return false
         }
       })
+    },
+    // 编辑集群凭证
+    editCluster(clusterId) {
+      GetClusterDetail(clusterId).then((res) => {
+        if (res.code === 0) {
+          this.addClusterVisible = true
+          this.clusterForm.clusterName = res.data.clusterName
+          this.clusterForm.kubeConfig = res.data.kubeConfig
+          this.clusterForm.apiAddress = res.data.api_address
+        }
+      })
+    },
+    deleteCluster(clusterId) {
+      DeleteCluster({
+        id: clusterId
+      }).then((res) => {
+        if (res.code ===0){
+          Message.success("删除成功")
+          this.reload()
+        }else {
+          Message.error(res.msg)
+        }
+      })
     }
-  },
-  created() {
-    this.GetCluster()
-  },
-  mounted() {
-
-    console.log(this.$route.path)
   },
   data() {
     return {

@@ -11,13 +11,14 @@ func KubernetesRouter(r *gin.RouterGroup) {
 	{
 		k8sRouter.POST("cluster", k8s.CreateCluster)
 		k8sRouter.GET("clusters", k8s.ListCluster)
+		k8sRouter.GET("clusters/:id", k8s.GetClusterDetail)
 		k8sRouter.DELETE("cluster", k8s.DeleteCluster)
 		k8sRouter.PUT("cluster", k8s.UpdateCluster)
 
 		k8sRouter.GET("/:cluster/nodes", k8s.ListNodes)
 		k8sRouter.GET("/:cluster/nodes/:name", k8s.GetNodeDetail)
-		k8sRouter.POST("/:cluster/nodes/:name/schedule", k8s.NodeUnschedule)
-		k8sRouter.POST("/:cluster/nodes/:name/cordon", k8s.NodeCordon)
+		k8sRouter.POST("/:cluster/nodes/schedule", k8s.NodeUnschedule)
+		k8sRouter.POST("/:cluster/nodes/cordon", k8s.NodeCordon)
 
 		// deployment
 		k8sRouter.GET("/:cluster/:namespace/deployments", k8s.ListDeployment)

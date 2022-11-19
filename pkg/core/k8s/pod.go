@@ -12,6 +12,7 @@ import (
 )
 
 func ListPods(c *gin.Context) {
+	// 绑定参数到结构体 /api/v1/kubernetes/<集群名称>/<命名空间>/<资源名称>
 	var namespaceOptions types.NamespaceOptions
 	if err := c.ShouldBindUri(&namespaceOptions); err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": -1, "msg": err.Error(), "data": ""})
@@ -24,12 +25,14 @@ func ListPods(c *gin.Context) {
 		return
 	}
 
+	// 生成clientset对象
 	clientSet, err := NewClientSet(namespaceOptions.Cluster)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": -1, "msg": err.Error()})
 		return
 	}
 
+	// 获取资源
 	podList, err := clientSet.CoreV1().Pods(namespaceOptions.Namespace).List(context.TODO(), metaV1.ListOptions{})
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": -1, "msg": err.Error()})

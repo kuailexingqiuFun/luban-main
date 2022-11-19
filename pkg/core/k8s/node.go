@@ -33,7 +33,8 @@ func ListNodes(c *gin.Context) {
 	// 3. 获取node
 	nodeList, err := clientSet.CoreV1().Nodes().List(context.TODO(), metaV1.ListOptions{})
 	if err != nil {
-
+		c.JSON(http.StatusOK, gin.H{"code": -1, "msg": err.Error(), "data": ""})
+		return
 	}
 
 	// 4. 返回数据

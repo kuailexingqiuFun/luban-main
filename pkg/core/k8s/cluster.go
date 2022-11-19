@@ -2,12 +2,14 @@ package k8s
 
 import (
 	"context"
-	"github.com/dnsjia/luban/api/types"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	metaV1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/dnsjia/luban/api/types"
 	"github.com/dnsjia/luban/cmd/options"
 	"github.com/dnsjia/luban/pkg/model"
 )
@@ -15,6 +17,7 @@ import (
 func CreateCluster(c *gin.Context) {
 	var (
 		clusterReq types.ClusterRequest
+		cluster    model.K8SCluster
 	)
 	if err := c.ShouldBindJSON(&clusterReq); err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -48,18 +51,33 @@ func CreateCluster(c *gin.Context) {
 	}
 
 	// 插入数据
-	if err := options.DB.Model(&model.K8SCluster{}).Create(&model.K8SCluster{
-		ClusterName: clusterReq.ClusterName,
-		KubeConfig:  clusterReq.KubeConfig,
-		ApiAddress:  clusterReq.ApiAddress,
-		NodeNumber:  len(nodeList.Items),
-	}).Error; err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"code": -1,
-			"data": "",
-			"msg":  err.Error(),
-		})
-		return
+	if err := options.DB.Model(&model.K8SCluster{}).Where("cluster_name = ?", clusterReq.ClusterName).First(&cluster).Error; err == gorm.ErrRecordNotFound {
+		if err := options.DB.Model(&model.K8SCluster{}).Create(&model.K8SCluster{
+			ClusterName: clusterReq.ClusterName,
+			KubeConfig:  clusterReq.KubeConfig,
+			ApiAddress:  clusterReq.ApiAddress,
+			NodeNumber:  len(nodeList.Items),
+		}).Error; err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"code": -1,
+				"data": "",
+				"msg":  err.Error(),
+			})
+			return
+		}
+	} else {
+		if err := options.DB.Model(&model.K8SCluster{}).Where("id = ?", cluster.Id).Updates(
+			map[string]interface{}{
+				"kube_config": clusterReq.KubeConfig,
+				"api_address": clusterReq.ApiAddress,
+			}).Error; err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"code": -1,
+				"data": "",
+				"msg":  err,
+			})
+			return
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -88,8 +106,8 @@ func ListCluster(c *gin.Context) {
 }
 
 func DeleteCluster(c *gin.Context) {
-	var cluster model.K8SCluster
-	if err := c.ShouldBindJSON(cluster); err != nil {
+	id, err := strconv.ParseInt(c.Query("id"), 10, 64)
+	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
 			"data": "",
@@ -98,11 +116,11 @@ func DeleteCluster(c *gin.Context) {
 		return
 	}
 
-	if err := options.DB.Model(&model.K8SCluster{}).Where("id = ?", cluster.Id).Delete(&cluster); err != nil {
+	if err := options.DB.Model(&model.K8SCluster{}).Where("id = ?", id).Delete(&model.K8SCluster{Id: id}).Error; err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
 			"data": "",
-			"msg":  err,
+			"msg":  err.Error,
 		})
 		return
 	}
@@ -117,7 +135,7 @@ func DeleteCluster(c *gin.Context) {
 
 func UpdateCluster(c *gin.Context) {
 	var cluster model.K8SCluster
-	if err := c.ShouldBindJSON(cluster); err != nil {
+	if err := c.ShouldBindJSON(&cluster); err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
 			"data": "",
@@ -130,7 +148,7 @@ func UpdateCluster(c *gin.Context) {
 	if err := options.DB.Model(&model.K8SCluster{}).Where("id = ?", cluster.Id).Updates(
 		map[string]interface{}{
 			"kube_config": cluster.KubeConfig,
-		}); err != nil {
+		}).Error; err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": -1,
 			"data": "",
@@ -143,5 +161,37 @@ func UpdateCluster(c *gin.Context) {
 		"code": 0,
 		"data": "",
 		"msg":  "操作成功",
+	})
+}
+
+type ClusterOptions struct {
+	Id string `uri:"id" binding:"required"`
+}
+
+func GetClusterDetail(c *gin.Context) {
+	var cluster ClusterOptions
+	if err := c.ShouldBindUri(&cluster); err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"data": "",
+			"msg":  err,
+		})
+		return
+	}
+
+	var k8s model.K8SCluster
+	if err := options.DB.Model(&model.K8SCluster{}).Where("id = ?", cluster.Id).Find(&k8s).Error; err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": -1,
+			"data": "",
+			"msg":  err,
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": 0,
+		"data": k8s,
+		"msg":  "ok",
 	})
 }

@@ -13,3 +13,19 @@ export function GetNodeDetail(clusterName, nodeName) {
     let url = listNodesUrl(clusterName) + "/" + nodeName
     return request("get", url)
 }
+
+export function DeleteCluster(params) {
+    return request('delete', '/api/v1/kubernetes/cluster', params)
+}
+
+export function EditCluster(clusterId, params) {
+    return request('put', `/api/v1/kubernetes/clusters/${clusterId}`, params)
+}
+
+export function GetClusterDetail(clusterId) {
+    return request('get', `/api/v1/kubernetes/clusters/${clusterId}`)
+}
+
+export function SetCordon(clusterName, params) {
+    return request('post', `/api/v1/kubernetes/${clusterName}/nodes/cordon`, params)
+}

@@ -73,6 +73,7 @@ func (n keywordsMatcher) Match(item interface{}) bool {
 	if pageItem["metadata"].(map[string]interface{})["namespace"] != nil && pageItem["metadata"].(map[string]interface{})["namespace"].(string) == n.keywords {
 		return true
 	}
+	// 根据metadata.name 做过滤匹配
 	if strings.Contains(pageItem["metadata"].(map[string]interface{})["name"].(string), n.keywords) {
 		return true
 	}

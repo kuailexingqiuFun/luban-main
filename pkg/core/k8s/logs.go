@@ -88,7 +88,7 @@ func DownloadContainerLog(c *gin.Context) {
 func GetLogFile(client kubernetes.Interface, namespace, podID string, container string, opts *v1.PodLogOptions) (io.ReadCloser, error) {
 	logOptions := &v1.PodLogOptions{
 		Container:  container,
-		Follow:     false,
+		Follow:     false, // 动态输出
 		Previous:   opts.Previous,
 		Timestamps: opts.Timestamps,
 	}
