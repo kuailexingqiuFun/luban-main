@@ -81,7 +81,7 @@
               <el-button size="small" type="primary" link icon="edit" @click="handleEdit(scope.row)">编辑</el-button>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" link  size="small" @click="handleDetail">详情</el-button>
+              <el-button type="primary" link  size="small" @click="handleDetail(scope.row)">详情</el-button>
             </el-form-item>
             <el-form-item>
               <el-button type="danger" link icon="delete" size="small" @click="scope.row.visible = true">删除</el-button>
