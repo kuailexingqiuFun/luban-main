@@ -127,7 +127,7 @@ func GetMetricsData(mt model.MetricsQuery) (t map[string]*model.PrometheusQueryR
 
 			//http Get请求 Prometheus接口
 			promql := url.QueryEscape(prometheusQueries.GetValueByField(fName))
-			log.Printf("promql: %s " + prometheusQueries.GetValueByField(fName))
+			log.Printf("promql:" + prometheusQueries.GetValueByField(fName))
 			fullpromql := fmt.Sprintf("%s/api/v1/query_range?query=%s&start=%d&end=%d&step=%d", prometheusUrl, promql, start, end, step)
 			fmt.Println(fullpromql)
 			resp, err := http.Get(fullpromql)
