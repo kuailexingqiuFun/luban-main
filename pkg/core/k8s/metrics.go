@@ -109,7 +109,7 @@ func GetMetricsData(mt model.MetricsQuery) (t map[string]*model.PrometheusQueryR
 			// 请求 Prometheus 查询
 			prometheusQueries := fValue.GenerateQuery()
 			if prometheusQueries == nil {
-				log.Fatalf("prometheusQueries nill failed" + err.Error())
+				log.Printf("prometheusQueries nill failed" + err.Error())
 				return
 			}
 
@@ -121,7 +121,7 @@ func GetMetricsData(mt model.MetricsQuery) (t map[string]*model.PrometheusQueryR
 			}
 
 			if err != nil {
-				log.Fatalf("Prometheus health failed" + err.Error())
+				log.Printf("Prometheus health failed: " + err.Error())
 				return
 			}
 
@@ -143,7 +143,7 @@ func GetMetricsData(mt model.MetricsQuery) (t map[string]*model.PrometheusQueryR
 
 			body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
-				log.Fatalf("read response body failed" + err.Error())
+				log.Printf("read response body failed" + err.Error())
 				return
 			}
 
