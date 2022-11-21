@@ -42,6 +42,7 @@ func Run() error {
 		routers.UserRouter(PublicGroup)
 		routers.KubernetesRouter(PublicGroup)
 		routers.ProxyApiRouter(PublicGroup)
+		routers.MetricsApiRouter(PublicGroup)
 	}
 
 	if err := r.Run(fmt.Sprintf(":%d", options.Config.Http.Listen)); err != nil {
