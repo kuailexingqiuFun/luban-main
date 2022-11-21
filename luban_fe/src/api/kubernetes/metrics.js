@@ -17,3 +17,10 @@ export const PodsMetricsList = (cluster_id, namespace, labelSelector) => {
     `${BaseUrl(cluster_id)}/apis/metrics.k8s.io/v1beta1/pods?search=true&fieldSelector=metadata.namespace=${namespace}&labelSelector=${labelSelector}&namespace=${namespace}`,
   )
 }
+
+
+export const GetMetrics = (data) => {
+  return request(
+    'post', "/api/v1/kubernetes/metrics/getMetrics",
+    data)
+}

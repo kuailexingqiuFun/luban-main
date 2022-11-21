@@ -78,7 +78,10 @@
         <template #default="scope">
           <el-form :inline="true" class="demo-form-inline">
             <el-form-item>
-              <el-button size="small" type="primary" link icon="edit" @click="handleEdit(scope.row)">编辑</el-button>
+              <el-button  size="small"  link icon="edit" @click="handleEdit(scope.row)">编辑</el-button>
+            </el-form-item>
+            <el-form-item>
+              <el-button size="small" type="primary" @click="handleMonitor(scope.row)">监控</el-button>
             </el-form-item>
             <el-form-item>
               <el-button type="primary" link  size="small" @click="handleDetail(scope.row)">详情</el-button>
@@ -162,6 +165,9 @@ export default {
   methods: {
     handleEdit(value) {
       this.$emit('edit', value)
+    },
+    handleMonitor(value) {
+      this.$emit('monitor', value)
     },
     handleDetail(value) {
       this.$emit('detail', value)

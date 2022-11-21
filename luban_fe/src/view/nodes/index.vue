@@ -26,7 +26,7 @@
     </div>
 
     <!--子组件表格-->
-    <ListBlock :value="tableData" @edit="handleEditYAML" @detail="handleDetail" @delete="handleDelete" />
+    <ListBlock :value="tableData" @edit="handleEditYAML" @detail="handleDetail" @delete="handleDelete" @monitor="handleMonitor"/>
 
     <!--分页-->
     <el-pagination
@@ -99,6 +99,23 @@
         </div>
       </el-dialog>
     </div>
+      <div v-if="dialogMonitorVisible">
+        <el-dialog
+            :visible.sync="dialogMonitorVisible"
+            :title="nodetitle"
+            width="70%"
+            @close="handleMonitorCancel">
+          <div class="container">
+            <MonitorBlock
+                style="width:100%;"
+                ref="MonitorBlock"
+                title="监控"
+                :form="monitorcurrentValue"
+                @cancel="handleMonitorCancel" />
+          </div>
+        </el-dialog>
+      </div>
+
     </el-card>
   </div>
 </template>
@@ -111,17 +128,20 @@ import { getClusterList } from '@/api/kubernetes/clusters'
 import YamlFormBlock from '@/components/yaml/YamlBlock.vue'
 import ListBlock from './table.vue'
 import DetailBlock from './detail.vue'
+import MonitorBlock from './monitor'
 export default {
   name: 'Deployment',
   components: {
     ListBlock,
     YamlFormBlock,
-    DetailBlock
+    DetailBlock,
+    MonitorBlock,
   },
   data() {
     return {
       tableData: [],
       title: '',
+      nodetitle: '',
       pageSize: 10,
       page: 1,
       total: 0,
@@ -137,9 +157,11 @@ export default {
       cluster_list: [],
       namespace_list: [],
       namespace: '',
+      monitorcurrentValue: {},
       dialogYamlVisible: false,
       dialogAddYamlVisible: false,
       dialogDetailVisible: false,
+      dialogMonitorVisible: false,
     }
   },
   created() {
@@ -292,6 +314,16 @@ export default {
         this.currentValue = res.data.items
         this.dialogDetailVisible = true
       }
+    },
+    async handleMonitor(value) {
+      this.nodetitle = "节点 名称: " + value.metadata.name
+      this.monitorcurrentValue = value
+      this.monitorcurrentValue['cluster_id'] = this.cluster_id
+      console.log(this.monitorcurrentValue)
+      this.dialogMonitorVisible = true
+    },
+    handleMonitorCancel(){
+      this.dialogMonitorVisible = false
     },
   }
 }
