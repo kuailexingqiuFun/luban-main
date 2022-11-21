@@ -319,7 +319,6 @@ export default {
       this.nodetitle = "节点 名称: " + value.metadata.name
       this.monitorcurrentValue = value
       this.monitorcurrentValue['cluster_id'] = this.cluster_id
-      console.log(this.monitorcurrentValue)
       this.dialogMonitorVisible = true
     },
     handleMonitorCancel(){
