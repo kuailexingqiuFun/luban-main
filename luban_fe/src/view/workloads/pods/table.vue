@@ -111,6 +111,12 @@
         <template slot-scope="scope">
           <el-form :inline="true"  class="demo-form-inline">
             <el-form-item>
+              <el-button size="mini" @click="handleMonitor(scope.row)">监控</el-button>
+            </el-form-item>
+            <el-form-item>
+              <span class="text-explode">|</span>
+            </el-form-item>
+            <el-form-item>
               <el-dropdown>
                     <span class="operate-span">
                       更多<i class="el-icon-arrow-down"></i>
@@ -163,7 +169,10 @@ export default {
     },
     handleDelete(value) {
       this.$emit('delete', value)
-    }
+    },
+    handleMonitor(value) {
+      this.$emit('monitor', value)
+    },
   },
   filters:{
     restartCounts: function(restarts) {

@@ -35,7 +35,7 @@
     </div>
 
     <!--子组件表格-->
-    <ListBlock :value="tableData"  @detail="podsDetail" @edit="handleEditYAML" @terminal="handleTerminal" @logs="handleLogs" @delete="handleDelete" />
+    <ListBlock :value="tableData" @monitor="handleMonitor"  @detail="podsDetail" @edit="handleEditYAML" @terminal="handleTerminal" @logs="handleLogs" @delete="handleDelete" />
 
     <!--分页-->
     <el-pagination
@@ -139,6 +139,22 @@
       </el-dialog>
       <div/>
     </div>
+    <div v-if="dialogMonitorVisible">
+      <el-dialog
+          :visible.sync="dialogMonitorVisible"
+          :title="podtitle"
+          width="70%"
+          @close="handleMonitorCancel">
+        <div class="container">
+          <MonitorBlock
+              style="width:100%;"
+              ref="MonitorBlock"
+              title="监控"
+              :form="monitorcurrentValue"
+              @cancel="handleMonitorCancel" />
+        </div>
+      </el-dialog>
+    </div>
   </div>
 </template>
 
@@ -153,12 +169,14 @@ import DetailBlock from './detail.vue'
 import Terminal from "@/components/Terminal"
 import LogsConsole from "@/components/console"
 import {EventsList} from "@/api/kubernetes/events";
+import MonitorBlock from './monitor'
 export default {
   name: 'Pod',
   components: {
     ListBlock,
     YamlFormBlock,
     DetailBlock,
+    MonitorBlock,
     'Application-terminal': Terminal,
     'Application-LogsConsole': LogsConsole,
   },
@@ -166,6 +184,7 @@ export default {
     return {
       tableData: [],
       title: '',
+      podtitle: '',
       pageSize: 10,
       page: 1,
       total: 0,
@@ -180,6 +199,7 @@ export default {
       },
       cluster_id: 1,
       currentValue: {},
+      monitorcurrentValue: {},
       cluster_list: [],
       namespace_list: [],
       namespace: '',
@@ -188,6 +208,7 @@ export default {
       dialogDetailVisible: false,
       dialogVisibleTerminal: false,
       dialogVisibleContainerlog: false,
+      dialogMonitorVisible: false,
       terminal: {
         pid: 1,
         name: 'terminal',
@@ -392,6 +413,15 @@ export default {
         }
         this.dialogDetailVisible = true
       }
+    },
+    async handleMonitor(value) {
+      this.podtitle = "Pod 名称: " + value.metadata.name
+      this.monitorcurrentValue = value
+      this.monitorcurrentValue['cluster_id'] = this.cluster_id
+      this.dialogMonitorVisible = true
+    },
+    handleMonitorCancel(){
+      this.dialogMonitorVisible = false
     },
   },
 }
