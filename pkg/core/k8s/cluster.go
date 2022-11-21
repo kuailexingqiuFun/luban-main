@@ -68,8 +68,9 @@ func CreateCluster(c *gin.Context) {
 	} else {
 		if err := options.DB.Model(&model.K8SCluster{}).Where("id = ?", cluster.Id).Updates(
 			map[string]interface{}{
-				"kube_config": clusterReq.KubeConfig,
-				"api_address": clusterReq.ApiAddress,
+				"kube_config":    clusterReq.KubeConfig,
+				"api_address":    clusterReq.ApiAddress,
+				"prometheus_url": clusterReq.PrometheusUrl,
 			}).Error; err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"code": -1,

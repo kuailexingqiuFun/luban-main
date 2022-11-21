@@ -32,6 +32,10 @@
           >
           </el-table-column>
           <el-table-column
+              prop="prometheus_url"
+              label="普罗米修斯地址">
+          </el-table-column>
+          <el-table-column
               fixed="right"
               label="操作"
               width="200"
@@ -60,7 +64,10 @@
             </el-input>
           </el-form-item>
           <el-form-item label="APIServer" prop="apiAddress">
-            <el-input v-model="clusterForm.apiAddress" autocomplete="off" placeholder="请输入apiServer地址"></el-input>
+            <el-input v-model="clusterForm.api_address" autocomplete="off" placeholder="请输入apiServer地址"></el-input>
+          </el-form-item>
+          <el-form-item label="普罗米修斯" prop="prometheus_url">
+            <el-input v-model="clusterForm.prometheus_url" autocomplete="off" placeholder="请输入普罗米修斯地址"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -96,7 +103,8 @@ export default {
       this.addClusterVisible = true
       this.clusterForm.clusterName = ''
       this.clusterForm.kubeConfig = ''
-      this.clusterForm.apiAddress = ''
+      this.clusterForm.api_address = ''
+      this.clusterForm.prometheus_url = ''
     },
     AddCluster(formName) {
       this.$refs[formName].validate((valid) => {
@@ -121,9 +129,7 @@ export default {
       GetClusterDetail(clusterId).then((res) => {
         if (res.code === 0) {
           this.addClusterVisible = true
-          this.clusterForm.clusterName = res.data.clusterName
-          this.clusterForm.kubeConfig = res.data.kubeConfig
-          this.clusterForm.apiAddress = res.data.api_address
+          this.clusterForm = res.data
         }
       })
     },
@@ -147,7 +153,8 @@ export default {
       clusterForm: {
         clusterName: '',
         kubeConfig: '',
-        apiAddress: ''
+        apiAddress: '',
+        prometheus_url: ''
       },
       clusterRules: {
         clusterName: [
@@ -156,8 +163,11 @@ export default {
         kubeConfig: [
           {required: true, message: '请输入集群凭证', trigger: 'blur'}
         ],
-        apiAddress: [
+        api_address: [
           {required: true, message: '请输入apiserver地址', trigger: 'blur'}
+        ],
+        prometheus_url: [
+          {required: true, message: '请输入普罗米修斯地址', trigger: 'blur'}
         ]
       }
     }
