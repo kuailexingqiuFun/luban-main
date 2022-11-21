@@ -49,7 +49,27 @@
           {{ row.metadata.creationTimestamp |formatDate }}
         </template>
       </el-table-column>
-      <table-operations :buttons="buttons" label="操作"></table-operations>
+      <el-table-column label="操作">
+        <template v-slot:default="{row}">
+          <el-dropdown>
+            <el-button link size="small">更多</el-button>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <div v-for="(item,index) in row.spec.containers" :key="'info-'+ index">
+                  <el-dropdown-item @click.native="openTerminal(row, item.name)">
+                    {{ item.name }} 终端
+                  </el-dropdown-item>
+                </div>
+                <div v-for="(item,index1) in row.spec.containers" :key="index1">
+                  <el-dropdown-item @click.native="openTerminalLogs(row, item.name)">
+                    {{ item.name }} 终端日志
+                  </el-dropdown-item>
+                </div>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </template>
+      </el-table-column>
     </el-table>
 
     <div v-if="dialogVisibleTerminal">
@@ -91,7 +111,6 @@
 <script>
    import { PodsList } from "@/api/kubernetes/workloads/pods"
    import { PodsMetricsList } from "@/api/kubernetes/metrics"
-   import TableOperations from "@/components/table-operations"
    import { AgeFormat } from '@/utils/age'
    import Terminal from "@/components/Terminal"
    import LogsConsole from "@/components/console"
@@ -104,7 +123,7 @@ export default {
     fieldSelector: String,
     name: String,
   },
-  components: { TableOperations,
+  components: {
             'Application-terminal': Terminal,
             'Application-LogsConsole': LogsConsole,
     },
@@ -139,41 +158,23 @@ export default {
         cols: 150,
         rows: 23
       },
-      buttons: [
-        {
-          label: "终端",
-          size: "mini",
-          icon: "iconfont iconline-terminalzhongduan",
-          click: (row) => {
-            this.openTerminal(row)
-          },
-        },
-        {
-          label: "日志",
-          size: "mini",
-          icon: "iconfont el-icon-tickets",
-          click: (row) => {
-            this.openTerminalLogs(row)
-          },
-        },
-      ],
       loading: false,
       pods: [],
       podUsage: [],
     }
   },
   methods: {
-    openTerminal(row){
+    openTerminal(row, name){
       console.log(row)
       this.Title = '容器终端 '+  ' 容器名称: ' + row.metadata.name
       this.dialogVisibleTerminal = true
       console.log(this.name)
-      this.currenturl = this.path + "/api/v1/kubernetes/proxy/terminal?pod_name=" + row.metadata.name + '&namespace=' + row.metadata.namespace + '&cluster_id=' + this.cluster_id + '&name='+ this.name
+      this.currenturl = this.path + "/api/v1/kubernetes/proxy/terminal?pod_name=" + row.metadata.name + '&namespace=' + row.metadata.namespace + '&cluster_id=' + this.cluster_id + '&name='+ name
     },
-    openTerminalLogs(row){
+    openTerminalLogs(row, name){
       this.Title = '容器日志 '+  ' 容器名称: ' + row.metadata.name
       this.dialogVisibleContainerlog = true
-      this.currenturl = this.path + "/api/v1/kubernetes/proxy/logs?pod_name=" + row.metadata.name + '&namespace=' + row.metadata.namespace + '&cluster_id=' + this.cluster_id + '&name='+ this.name
+      this.currenturl = this.path + "/api/v1/kubernetes/proxy/logs?pod_name=" + row.metadata.name + '&namespace=' + row.metadata.namespace + '&cluster_id=' + this.cluster_id + '&name='+ name
     },
     closeTerminalDialog(){
       this.dialogVisibleTerminal = false
