@@ -58,9 +58,11 @@ func PrometheusHealth(clusterId uint) (prometheusUrl string, err error) {
 		return "", err
 	}
 
+	// 超时时间
 	ctx, cancel := context.WithTimeout(context.Background(), 1000*time.Millisecond)
 	defer cancel()
 
+	// 请求普罗米修斯ready接口
 	prourl := fmt.Sprintf("%s/-/ready", clusterObj.PrometheusUrl)
 	readyReq, err := http.NewRequest("GET", prourl, nil)
 	if err != nil {
@@ -87,19 +89,27 @@ func PrometheusHealth(clusterId uint) (prometheusUrl string, err error) {
 //@return: t map[string]*model.PrometheusQueryResp, err error
 
 func GetMetricsData(mt model.MetricsQuery) (t map[string]*model.PrometheusQueryResp, err error) {
+	// 查询时间范围
 	step := 60
 	end := time.Now().Unix()
 	start := end - 3600
 
-	// tracker
+	// 初始化tracker
 	tracker := model.NewPrometheusTracker()
+
+	// 声明一个等待组
 	wg := sync.WaitGroup{}
+
+	// 通过反射获信息
 	e := reflect.ValueOf(&mt).Elem()
 	for i := 0; i < e.NumField(); i++ {
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()
+			// 字段名称，例如：  MemoryUsage, PodUsage
 			fName := e.Type().Field(i).Name
+
+			// 断言结构体值填充到结构体赋值
 			fValue := e.Field(i).Interface().(*model.MetricsCategory)
 			fTag := e.Type().Field(i).Tag
 			if fValue == nil {
@@ -125,11 +135,12 @@ func GetMetricsData(mt model.MetricsQuery) (t map[string]*model.PrometheusQueryR
 				return
 			}
 
-			//http Get请求 Prometheus接口
+			// 通过反射返回promsql
 			promql := url.QueryEscape(prometheusQueries.GetValueByField(fName))
-			log.Printf("promql:" + prometheusQueries.GetValueByField(fName))
+			log.Printf("promsql 打印:" + prometheusQueries.GetValueByField(fName))
+
 			fullpromql := fmt.Sprintf("%s/api/v1/query_range?query=%s&start=%d&end=%d&step=%d", prometheusUrl, promql, start, end, step)
-			fmt.Println(fullpromql)
+			//http Get请求 Prometheus接口
 			resp, err := http.Get(fullpromql)
 			if err != nil {
 				log.Fatalf("request metrics data failed" + err.Error())
@@ -147,14 +158,17 @@ func GetMetricsData(mt model.MetricsQuery) (t map[string]*model.PrometheusQueryR
 				return
 			}
 
+			// 解析数据到结构体
 			var data model.PrometheusQueryResp
 			if err := json.Unmarshal(body, &data); err != nil {
 				log.Fatalf("unmarshal response body to models.PrometheusQueryResp failed" + err.Error())
 				return
 			}
 
-			// 配置当前查询的数据结果
+			// 从model tag里面获取里面数据
 			tag := fTag.Get("json")
+
+			// tag[:strings.Index(tag, ",omitempty")] 获取tag里面 key 例如: memoryUsage
 			tracker.Set(tag[:strings.Index(tag, ",omitempty")], &data)
 		}(i)
 	}
