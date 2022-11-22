@@ -168,7 +168,7 @@ func GetMetricsData(mt model.MetricsQuery) (t map[string]*model.PrometheusQueryR
 			// 从model tag里面获取里面数据
 			tag := fTag.Get("json")
 
-			// tag[:strings.Index(tag, ",omitempty")] 获取tag里面 key 例如: memoryUsage
+			// json:"memoryUsage,omitempty" 获取里面memoryUsage作为key
 			tracker.Set(tag[:strings.Index(tag, ",omitempty")], &data)
 		}(i)
 	}
