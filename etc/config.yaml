@@ -4,8 +4,8 @@ http:
   listen: 19999
 
 mysql:
-  host: '47.98.96.81:3306'
+  host: 'localhost:3306'
   config: 'charset=utf8mb4&parseTime=True&loc=Local'
-  db-name: 'devops'
-  username: 'luban-dev'
-  password: 'EzEDJvEpzf0WH9QcW19Id'
+  db-name: 'luban-demo'
+  username: 'root'
+  password: 'd7131eeba69adaa0d6487bfddabd4b4b'
