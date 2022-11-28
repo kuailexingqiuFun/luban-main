@@ -53,6 +53,28 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// Ldap方式登陆, true
+	if userRequest.Ldap {
+		user, err := LdapLogin(userRequest.Username, userRequest.Password)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{
+				"code": types.ERROR,
+				"msg":  err.Error(),
+				"data": "",
+			})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{
+			"code": types.SUCCESS,
+			"data": user,
+			"msg":  types.UserLoginSuccess,
+		})
+		return
+
+	}
+
+	// 普通方式登陆
 	if err := options.DB.Where("username = ?", userRequest.Username).First(&user).Error; err == gorm.ErrRecordNotFound {
 		c.JSON(http.StatusOK, gin.H{
 			"code": types.ERROR,

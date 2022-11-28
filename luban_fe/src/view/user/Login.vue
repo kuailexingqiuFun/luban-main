@@ -13,7 +13,7 @@
             </el-form-item>
 
             <el-form-item prop="remember">
-              <el-checkbox v-model="ruleForm.remember" label="记住密码" name="type">
+              <el-checkbox v-model="ruleForm.ldap" label="LDAP" name="type">
               </el-checkbox>
             </el-form-item>
 
@@ -37,7 +37,7 @@ export default {
       ruleForm: {
         username: sessionStorage.getItem("username"),
         password: sessionStorage.getItem("password"),
-        remember: false
+        ldap: false
       },
       rules: {
         username: [
@@ -53,13 +53,13 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          if (this.ruleForm.remember) {
-            sessionStorage.setItem("username", this.ruleForm.username)
-            sessionStorage.setItem("password", this.ruleForm.password)
-          } else {
-            sessionStorage.removeItem("username")
-            sessionStorage.removeItem("password")
-          }
+          // if (this.ruleForm.remember) {
+          //   sessionStorage.setItem("username", this.ruleForm.username)
+          //   sessionStorage.setItem("password", this.ruleForm.password)
+          // } else {
+          //   sessionStorage.removeItem("username")
+          //   sessionStorage.removeItem("password")
+          // }
           UserLogin(this.ruleForm).then((res) => {
             if (res.code === 0) {
               Message.success(res.msg)
