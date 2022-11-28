@@ -2,6 +2,7 @@ package k8s
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"github.com/dnsjia/luban/cmd/options"
@@ -47,39 +48,63 @@ func GetMetrics(c *gin.Context) {
 }
 
 //@author: Eagle
+//@function: PrometheusAuth
+//@description: Base Auth 认证信息
+//@param: clusterObj model.K8SCluster
+//@return:err error
+
+func PrometheusAuth(clusterObj model.K8SCluster) (httpClient http.Client) {
+	httpClient = http.Client{Transport: &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: true}}}
+	if clusterObj.PrometheusType == 2 {
+		httpClient = http.Client{
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+				Proxy: func(req *http.Request) (*url.URL, error) {
+					req.SetBasicAuth(clusterObj.PrometheusUser, clusterObj.PrometheusPwd)
+					return nil, nil
+				},
+			}}
+	}
+	return httpClient
+}
+
+//@author: Eagle
 //@function: PrometheusHealth
 //@description: 检查Prometheus是否健康
 //@param: clusterId uint
 //@return:err error
 
-func PrometheusHealth(clusterId uint) (prometheusUrl string, err error) {
+func PrometheusHealth(clusterId uint) (prometheusUrl string, hclient http.Client, err error) {
 	var clusterObj model.K8SCluster
 	if err = options.DB.Where("id = ?", clusterId).First(&clusterObj).Error; err != nil {
-		return "", err
+		return "", hclient, err
 	}
 
 	// 超时时间
 	ctx, cancel := context.WithTimeout(context.Background(), 1000*time.Millisecond)
 	defer cancel()
 
+	// 生成httpClient
+	httpClient := PrometheusAuth(clusterObj)
+
 	// 请求普罗米修斯ready接口
 	prourl := fmt.Sprintf("%s/-/ready", clusterObj.PrometheusUrl)
 	readyReq, err := http.NewRequest("GET", prourl, nil)
 	if err != nil {
-		return "", err
+		return "", hclient, err
 	}
 
-	readyResp, err := http.DefaultClient.Do(readyReq.WithContext(ctx))
+	readyResp, err := httpClient.Do(readyReq.WithContext(ctx))
 	if err != nil {
-		return "", err
+		return "", hclient, err
 	}
 
 	// 如果还没有ready，则直接返回前端空数据
 	if readyResp.StatusCode != http.StatusOK {
-		return "", err
+		return "", hclient, err
 	}
 
-	return clusterObj.PrometheusUrl, err
+	return clusterObj.PrometheusUrl, httpClient, err
 }
 
 //@author: Eagle
@@ -102,6 +127,7 @@ func GetMetricsData(mt model.MetricsQuery) (t map[string]*model.PrometheusQueryR
 
 	// 通过反射获信息
 	e := reflect.ValueOf(&mt).Elem()
+
 	for i := 0; i < e.NumField(); i++ {
 		wg.Add(1)
 		go func(i int) {
@@ -124,7 +150,7 @@ func GetMetricsData(mt model.MetricsQuery) (t map[string]*model.PrometheusQueryR
 			}
 
 			//Prometheus健康检查
-			prometheusUrl, err := PrometheusHealth(fValue.ClusterId)
+			prometheusUrl, httpClient, err := PrometheusHealth(fValue.ClusterId)
 			if fValue.Start != 0 || fValue.End != 0 {
 				start = fValue.Start / 1000
 				end = fValue.End / 1000
@@ -141,7 +167,7 @@ func GetMetricsData(mt model.MetricsQuery) (t map[string]*model.PrometheusQueryR
 
 			fullpromql := fmt.Sprintf("%s/api/v1/query_range?query=%s&start=%d&end=%d&step=%d", prometheusUrl, promql, start, end, step)
 			//http Get请求 Prometheus接口
-			resp, err := http.Get(fullpromql)
+			resp, err := httpClient.Get(fullpromql)
 			if err != nil {
 				log.Fatalf("request metrics data failed" + err.Error())
 				return

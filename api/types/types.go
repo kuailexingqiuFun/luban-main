@@ -104,11 +104,14 @@ type UserRequest struct {
 }
 
 type ClusterRequest struct {
-	Id            int64  `json:"id"`
-	ClusterName   string `json:"clusterName"`
-	KubeConfig    string `json:"kubeConfig"`
-	ApiAddress    string `json:"api_address"`
-	PrometheusUrl string `json:"prometheus_url"`
+	Id             int64  `json:"id"`
+	ClusterName    string `json:"clusterName"`
+	KubeConfig     string `json:"kubeConfig"`
+	ApiAddress     string `json:"api_address"`
+	PrometheusUrl  string `json:"prometheus_url"`
+	PrometheusType int64  `json:"prometheus_type"`
+	PrometheusUser string `json:"prometheus_user"`
+	PrometheusPwd  string `json:"prometheus_pwd"`
 }
 
 type BatchNode struct {

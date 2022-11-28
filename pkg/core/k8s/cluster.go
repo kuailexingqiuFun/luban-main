@@ -53,10 +53,14 @@ func CreateCluster(c *gin.Context) {
 	// 插入数据
 	if err := options.DB.Model(&model.K8SCluster{}).Where("cluster_name = ?", clusterReq.ClusterName).First(&cluster).Error; err == gorm.ErrRecordNotFound {
 		if err := options.DB.Model(&model.K8SCluster{}).Create(&model.K8SCluster{
-			ClusterName: clusterReq.ClusterName,
-			KubeConfig:  clusterReq.KubeConfig,
-			ApiAddress:  clusterReq.ApiAddress,
-			NodeNumber:  len(nodeList.Items),
+			ClusterName:    clusterReq.ClusterName,
+			KubeConfig:     clusterReq.KubeConfig,
+			ApiAddress:     clusterReq.ApiAddress,
+			PrometheusType: clusterReq.PrometheusType,
+			PrometheusUrl:  clusterReq.PrometheusUrl,
+			PrometheusUser: clusterReq.PrometheusUser,
+			PrometheusPwd:  clusterReq.PrometheusPwd,
+			NodeNumber:     len(nodeList.Items),
 		}).Error; err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"code": -1,
@@ -68,9 +72,12 @@ func CreateCluster(c *gin.Context) {
 	} else {
 		if err := options.DB.Model(&model.K8SCluster{}).Where("id = ?", cluster.Id).Updates(
 			map[string]interface{}{
-				"kube_config":    clusterReq.KubeConfig,
-				"api_address":    clusterReq.ApiAddress,
-				"prometheus_url": clusterReq.PrometheusUrl,
+				"kube_config":     clusterReq.KubeConfig,
+				"api_address":     clusterReq.ApiAddress,
+				"prometheus_url":  clusterReq.PrometheusUrl,
+				"prometheus_type": clusterReq.PrometheusType,
+				"prometheus_user": clusterReq.PrometheusUser,
+				"prometheus_pwd":  clusterReq.PrometheusPwd,
 			}).Error; err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"code": -1,

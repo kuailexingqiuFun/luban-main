@@ -66,6 +66,18 @@
           <el-form-item label="APIServer" prop="apiAddress">
             <el-input v-model="clusterForm.api_address" autocomplete="off" placeholder="请输入apiServer地址"></el-input>
           </el-form-item>
+          <el-form-item label="认证类型" prop="prometheus_type">
+            <el-radio-group v-model="clusterForm.prometheus_type">
+              <el-radio :label="1">无</el-radio>
+              <el-radio :label="2">Base Auth</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item v-if="clusterForm.prometheus_type === 2" label="认证用户" prop="prometheus_user">
+            <el-input v-model="clusterForm.prometheus_user" autocomplete="off" placeholder="请输入普罗米修斯认证用户"></el-input>
+          </el-form-item>
+          <el-form-item v-if="clusterForm.prometheus_type === 2" label="认证密码" prop="prometheus_user">
+            <el-input v-model="clusterForm.prometheus_pwd" autocomplete="off" placeholder="请输入普罗米修斯认证密码"></el-input>
+          </el-form-item>
           <el-form-item label="普罗米修斯" prop="prometheus_url">
             <el-input v-model="clusterForm.prometheus_url" autocomplete="off" placeholder="请输入普罗米修斯地址"></el-input>
           </el-form-item>
@@ -105,6 +117,9 @@ export default {
       this.clusterForm.kubeConfig = ''
       this.clusterForm.api_address = ''
       this.clusterForm.prometheus_url = ''
+      this.clusterForm.prometheus_type = ''
+      this.clusterForm.prometheus_user = ''
+      this.clusterForm.prometheus_pwd = ''
     },
     AddCluster(formName) {
       this.$refs[formName].validate((valid) => {
@@ -154,7 +169,10 @@ export default {
         clusterName: '',
         kubeConfig: '',
         apiAddress: '',
-        prometheus_url: ''
+        prometheus_url: '',
+        prometheus_type: '',
+        prometheus_user: '',
+        prometheus_pwd: ''
       },
       clusterRules: {
         clusterName: [
@@ -168,6 +186,15 @@ export default {
         ],
         prometheus_url: [
           {required: true, message: '请输入普罗米修斯地址', trigger: 'blur'}
+        ],
+        prometheus_type: [
+          {required: true, message: '请输选择认证类型', trigger: 'blur'}
+        ],
+        prometheus_user: [
+          {required: true, message: '请输入认证用户', trigger: 'blur'}
+        ],
+        prometheus_pwd: [
+          {required: true, message: '请输入认证密码', trigger: 'blur'}
         ]
       }
     }
