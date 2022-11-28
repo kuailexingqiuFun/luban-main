@@ -66,6 +66,9 @@
           <el-form-item label="APIServer" prop="apiAddress">
             <el-input v-model="clusterForm.api_address" autocomplete="off" placeholder="请输入apiServer地址"></el-input>
           </el-form-item>
+          <el-form-item label="普罗米修斯" prop="prometheus_url">
+            <el-input v-model="clusterForm.prometheus_url" autocomplete="off" placeholder="请输入普罗米修斯地址"></el-input>
+          </el-form-item>
           <el-form-item label="认证类型" prop="prometheus_type">
             <el-radio-group v-model="clusterForm.prometheus_type">
               <el-radio :label="1">无</el-radio>
@@ -77,9 +80,6 @@
           </el-form-item>
           <el-form-item v-if="clusterForm.prometheus_type === 2" label="认证密码" prop="prometheus_user">
             <el-input v-model="clusterForm.prometheus_pwd" autocomplete="off" placeholder="请输入普罗米修斯认证密码"></el-input>
-          </el-form-item>
-          <el-form-item label="普罗米修斯" prop="prometheus_url">
-            <el-input v-model="clusterForm.prometheus_url" autocomplete="off" placeholder="请输入普罗米修斯地址"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
